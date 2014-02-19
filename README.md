@@ -1,5 +1,5 @@
 # Install Dependencies
-- `$ pip install flask`
+- `$ pip install -r requirements.txt`
 
 # Run application
 - `$ python main.py`
