@@ -32,15 +32,7 @@ def close_db(error):
 
 @app.route("/")
 def hello():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("INSERT INTO test (val) VALUES ('Hello')")
-    db.commit()
-
-    cursor.execute("SELECT * FROM test")
-    test = cursor.fetchone()['val']
-
-    return "%s World!" % test
+    return "Hello World!"
 
 if __name__ == "__main__":
     app.run()
