@@ -9,4 +9,14 @@ SCHEMA = [
        )
     """),
     (2, "DROP TABLE test"),
+    (3, """\
+        CREATE TABLE users (
+            id integer PRIMARY KEY,
+            name varchar(255),
+            first_name varchar(50),
+            last_name varchar(50),
+            email varchar(255) NOT NULL,
+            password_hash varchar(80) NOT NULL
+        )
+    """),
 ]
