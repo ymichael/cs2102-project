@@ -24,7 +24,7 @@ class ProductionConfig(Config):
 
 
 class DevelopmentConfig(Config):
-    # DATABASE = 'dev.sqlite'
+    DATABASE = 'dev.sqlite'
     DEBUG = True
 
 
