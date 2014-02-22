@@ -21,7 +21,15 @@ def get_all_users():
     cursor = database.cursor()
     rows = cursor.execute(sql).fetchall()
     database.close()
-    return rows
+
+    users = []
+    for user in rows:
+        users.append({
+            'id': user['id'],
+            'name': user['name'],
+            'email': user['email']
+        })
+    return users
 
 
 def get_number_of_users():
