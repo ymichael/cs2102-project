@@ -9,7 +9,7 @@ class Environments(object):
 
 
 def get_env():
-    return os.environ.get('FLASK_ENV') or Environments.Default
+    return os.environ.get('FLASK_ENV', Environments.Default)
 
 
 class Config(object):
