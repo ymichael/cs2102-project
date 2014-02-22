@@ -5,7 +5,7 @@ from flask import g, render_template, Flask
 
 
 app = Flask(__name__)
-app.config.from_object(config.get_config())
+app.config.from_object(config.config())
 
 
 # Initialize db.

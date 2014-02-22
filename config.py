@@ -15,21 +15,25 @@ def get_env():
 class Config(object):
     DEBUG = False
     TESTING = False
+    DATABASE = ':memory:'
+
 
 
 class ProductionConfig(Config):
-    pass
+    DATABASE = 'prod.sqlite'
 
 
 class DevelopmentConfig(Config):
+    # DATABASE = 'dev.sqlite'
     DEBUG = True
 
 
 class TestingConfig(Config):
     TESTING = True
+    DATABASE = 'test.sqlite'
 
 
-def get_config():
+def config():
     env = get_env()
     if env == Environments.Development:
         return 'config.DevelopmentConfig'
@@ -40,9 +44,25 @@ def get_config():
     return 'config.Config'
 
 
+def get_config(key):
+    env = get_env()
+    config = Config
+    if env == Environments.Development:
+        config = DevelopmentConfig
+    elif env == Environments.Production:
+        config = ProductionConfig
+    elif env == Environments.Testing:
+        config = TestingConfig
+
+    return getattr(config, key)
+
+
 def is_production():
     return get_env() == Environments.Production
 
 
 def is_dev():
     return get_env() == Environments.Development
+
+def is_test():
+    return get_env() == Environments.Testing

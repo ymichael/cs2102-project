@@ -1,10 +1,13 @@
 import sqlite3
 import os
+import config
 import schema
+import mock_data
+from flask import current_app as app
 
 
 def connect_db():
-    db = sqlite3.connect("dev.sqlite")
+    db = sqlite3.connect(config.get_config('DATABASE'))
     # This allows us to treat rows as python dictionaries instead of tuples.
     db.row_factory = sqlite3.Row
     return db
@@ -88,6 +91,18 @@ def update_schema():
         if index > latest_executed_schema:
             exec_schema_change(index, sql)
 
-def init_db():
+def init_db(clean=False):
+    """Initialize DB.
+
+    If clean is True, removes existing database and starts from scratch.
+    Used in tests.
+    """
+    if clean:
+        os.remove(config.get_config('DATABASE'))
+
     maybe_init_schema()
     check_schema()
+
+    # TODO(michael): tmp. for dev.
+    # Just forcibly update the schema everytime.
+    update_schema()
