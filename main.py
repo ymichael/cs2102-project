@@ -1,16 +1,11 @@
+import config
 import db
 import flask
+from flask import g, render_template, Flask
 
 
-g = flask.g
-render_template = flask.render_template
-
-
-app = flask.Flask(__name__)
-
-# Debug mode
-# TODO(michael): Set this using env variables.
-app.debug = True
+app = Flask(__name__)
+app.config.from_object(config.get_config())
 
 
 # Initialize db.
