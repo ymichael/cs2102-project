@@ -3,19 +3,6 @@ import os
 import schema
 
 
-def _execute_query(sql, db=None, commit=False):
-    database = db or connect_db()
-    ret = database.cursor().execute(sql).fetchall()
-
-    if commit:
-        database.commit()
-
-    if db:
-        database.close()
-
-    return ret
-
-
 def connect_db():
     db = sqlite3.connect("dev.sqlite")
     # This allows us to treat rows as python dictionaries instead of tuples.
@@ -32,35 +19,54 @@ def maybe_init_schema():
                 sql_stmt text NOT NULL
             )
         """ % SCHEMA_TABLE_NAME
-        _execute_query(sql, commit=True)
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(sql)
+        db.commit()
+        db.close()
 
 
 def exec_schema_change(index, sql):
-    _execute_query(sql, commit=True)
-    print "Executed: (%s, %s)" % (index, sql)
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(sql)
 
     update_schema_table = """\
         INSERT INTO %s (id, sql_stmt)
-            VALUES (%s, "%s")
-    """ % (SCHEMA_TABLE_NAME, index, sql)
-    _execute_query(update_schema_table, commit=True)
+            VALUES (?, ?)
+    """ % SCHEMA_TABLE_NAME
+    cursor.execute(update_schema_table, (index, sql))
+
+    db.commit()
+    db.close()
+    print "Executed: (%s, %s)" % (index, sql)
 
 
 def latest_schema():
-    sql = "SELECT MAX(id) FROM %s" % SCHEMA_TABLE_NAME
+    sql = "SELECT MAX(id) AS max FROM %s" % SCHEMA_TABLE_NAME
+    db = connect_db()
+    cursor = db.cursor()
+    result = cursor.execute(sql).fetchone()
+    db.close()
     try:
-        return int(_execute_query(sql)[0][0])
+        return int(result['max'])
     except:
         return 0
 
 
 def list_tables():
     sql = """\
-        SELECT *
-        FROM sqlite_master
+        SELECT s.tbl_name
+        FROM sqlite_master AS s
         WHERE type = 'table'
     """
-    return [row['tbl_name'] for row in _execute_query(sql)]
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    db.close()
+
+    return [row['tbl_name'] for row in rows]
 
 
 def check_schema():
