@@ -1,9 +1,12 @@
 import db
-from flask import Flask, g
+import flask
 
 
-app = Flask(__name__)
+g = flask.g
+render_template = flask.render_template
 
+
+app = flask.Flask(__name__)
 
 # Debug mode
 # TODO(michael): Set this using env variables.
@@ -31,8 +34,12 @@ def close_db(error):
 
 
 @app.route("/")
-def hello():
-    return "Hello World!"
+def index():
+    data = {
+        'title': 'hello',
+        'text': 'world',
+    }
+    return render_template('index.html', **data)
 
 if __name__ == "__main__":
     app.run()
