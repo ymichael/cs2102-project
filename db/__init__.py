@@ -6,10 +6,17 @@ import mock_data
 from flask import current_app as app
 
 
+def dict_factory(cursor, row):
+    d = {}
+    for idx,col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+
 def connect_db():
     db = sqlite3.connect(config.get_config('DATABASE'))
     # This allows us to treat rows as python dictionaries instead of tuples.
-    db.row_factory = sqlite3.Row
+    db.row_factory = dict_factory
     return db
 
 

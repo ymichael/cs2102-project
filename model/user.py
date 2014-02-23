@@ -2,6 +2,37 @@ import db
 import hashlib
 import random
 
+class User(object):
+    def __init__(self, user_id=None):
+        self.user_id = user_id
+
+    def info(self):
+        if hasattr(self, '_info'):
+            return self._info
+
+        if self.user_id:
+            self._info = get_user_info(self.user_id) or {}
+            return self._info
+
+        return {}
+
+    def get_name(self):
+        return self.info().get('name')
+
+    def set_name(self, value):
+        self.info()['name'] = value
+
+    name = property(get_name, set_name)
+
+    def get_email(self):
+        return self.info().get('email')
+
+    def set_email(self, value):
+        self.info()['email'] = value
+
+    email = property(get_email, set_email)
+
+
 def create_new_user(name, email, password):
     password_hash = get_password_hash(password)
     sql = """\
@@ -10,9 +41,23 @@ def create_new_user(name, email, password):
 
     database = db.connect_db()
     cursor = database.cursor()
+
     cursor.execute(sql, (name, email, password_hash))
     database.commit()
+    new_user_id = cursor.lastrowid
+
     database.close()
+
+    return new_user_id
+
+
+def get_user_info(user_id):
+    sql = "SELECT * FROM users WHERE id = ?"
+    database = db.connect_db()
+    cursor = database.cursor()
+    user = cursor.execute(sql, (user_id,)).fetchone()
+    database.close()
+    return user
 
 
 def get_all_users():
