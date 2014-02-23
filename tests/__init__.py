@@ -1,4 +1,21 @@
+import nose
+
 import db
+import app
+
+# Helpers
+assert_eq = nose.tools.eq_
+
+
+class TestController(object):
+    def setup(self):
+        self.app = app.app.test_client()
+        self.db = db.connect_db()
+        db.init_db()
+
+    def teardown(self):
+        self.db.close()
+        db.remove_db()
 
 
 def prepare(test):

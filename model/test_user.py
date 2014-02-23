@@ -1,3 +1,4 @@
+from tests import assert_eq
 import tests
 import model
 import config
@@ -11,11 +12,11 @@ def test_password():
 
 @tests.prepare
 def test_user_creation():
-    assert model.user.get_number_of_users() == 0
+    assert_eq(model.user.get_number_of_users(), 0)
 
     model.user.create_new_user(
         'Michael',
         'michael@test.com',
         'mypassword')
 
-    assert model.user.get_number_of_users() == 1
+    assert_eq(model.user.get_number_of_users(), 1)
