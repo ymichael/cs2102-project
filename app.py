@@ -3,6 +3,7 @@ import db
 import model
 import flask
 from flask import g, render_template, Flask
+import json
 
 
 app = Flask(__name__)
@@ -30,10 +31,9 @@ def close_db(error):
         g.sqlite_db.close()
 
 
-@app.route("/users")
-def users():
-    # tmp.
-    return str(model.user.get_all_users())
+@app.route("/listings")
+def listings():
+    return json.dumps(model.listing.get_latest_listings(20))
 
 
 @app.route("/")

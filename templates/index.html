@@ -1,6 +1,13 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class='row'>
-    <h1>Hello {{ text }}</h1>
+<div class='row' ng-controller=ListingsController>
+    <h1>Listings!</h1>
+    <ul class='listings'>
+        <li ng-repeat="listing in listings">
+            <h2>{[{ listing.title }]}</h2>
+            <time>{[{ listing.create_time }]}</time>
+            <p>{[{ listing.description }]}</p>
+        </li>
+    </ul>
 </div>
 {% endblock %}
