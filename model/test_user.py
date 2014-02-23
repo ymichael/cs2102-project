@@ -14,17 +14,38 @@ def test_password():
 def test_user_creation():
     assert_eq(model.user.get_number_of_users(), 0)
 
-    user_name = 'Michael'
-    user_email = 'michael@test.com'
     user_id = model.user.create_new_user(
-        user_name, user_email, 'mypassword')
+        'michael', 'michael@test.com', 'mypassword')
 
     assert_eq(model.user.get_number_of_users(), 1)
 
     user = model.user.User(user_id)
     assert_eq(user.user_id, user_id)
-    assert_eq(user.name, user_name)
-    assert_eq(user.email, user_email)
+    assert_eq(user.name, 'michael')
+    assert_eq(user.email, 'michael@test.com')
+
+
+@tests.prepare
+def test_user_update_and_save():
+    assert_eq(model.user.get_number_of_users(), 0)
+
+    user_id = model.user.create_new_user(
+        'michael', 'michael@test.com', 'mypassword')
+
+    assert_eq(model.user.get_number_of_users(), 1)
+
+    user = model.user.User(user_id)
+    assert_eq(user.user_id, user_id)
+    assert_eq(user.name, 'michael')
+    assert_eq(user.email, 'michael@test.com')
+
+    user.name = 'John'
+    user.email = 'john@test.com'
+    user.save()
+
+    new_user_obj = model.user.User(user_id)
+    assert_eq(new_user_obj.name, 'John')
+    assert_eq(new_user_obj.email, 'john@test.com')
 
 
 @tests.prepare

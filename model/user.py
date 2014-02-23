@@ -32,6 +32,20 @@ class User(object):
 
     email = property(get_email, set_email)
 
+    def save(self):
+        if not (self.name and self.email and self.user_id):
+            raise Exception('Trying to save invalid user.')
+        update_existing_user(self.user_id, self.name, self.email)
+
+
+def update_existing_user(user_id, name, email):
+    sql = """\
+        UPDATE users
+        SET name = ?, email = ?
+        WHERE id = ?"""
+    with db.DatabaseCursor() as cursor:
+        cursor.execute(sql, (name, email, user_id))
+
 
 def create_new_user(name, email, password):
     password_hash = get_password_hash(password)
