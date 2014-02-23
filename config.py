@@ -1,4 +1,5 @@
 import os
+import sys
 
 
 class Environments(object):
@@ -9,6 +10,11 @@ class Environments(object):
 
 
 def get_env():
+    # NOTE(michael): Check if this function is being called by nose.
+    for arg in sys.argv:
+        if 'nose' in arg:
+            return Environments.Testing
+
     return os.environ.get('FLASK_ENV', Environments.Default)
 
 
