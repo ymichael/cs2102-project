@@ -7,7 +7,8 @@ SCHEMA = [
             id integer PRIMARY KEY,
             name varchar(255) NOT NULL,
             email varchar(255) NOT NULL,
-            password_hash varchar(80) NOT NULL
+            password_hash varchar(80) NOT NULL,
+            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         )
     """),
     (2, """CREATE INDEX users_email ON users (email)"""),
@@ -16,7 +17,8 @@ SCHEMA = [
             id integer PRIMARY KEY,
             title varchar(255) NOT NULL,
             description text,
-            owner_id integer NOT NULL
+            owner_id integer NOT NULL,
+            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         )
     """),
     (4, """CREATE INDEX listings_owner ON listings (owner_id)"""),
