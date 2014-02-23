@@ -3,11 +3,11 @@
 
 # Running application
 ## In production
-- `$ FLASK_ENV=prod python main.py`
+- `$ FLASK_ENV=prod python app.py`
 - Go to `http://localhost:5000`
 
 ## In development
-- `$ FLASK_ENV=dev python main.py` or `python main.py`
+- `$ FLASK_ENV=dev python app.py` or `python app.py`
 - Go to `http://localhost:5000`
 
 # Running Tests
