@@ -48,6 +48,7 @@ def exec_schema_change(index, sql):
 
 
 def latest_schema():
+    maybe_init_schema()
     sql = "SELECT MAX(id) AS max FROM %s" % SCHEMA_TABLE_NAME
     db = connect_db()
     cursor = db.cursor()
