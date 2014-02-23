@@ -1,9 +1,14 @@
 import db
 
 
-def manage(test):
-    def db_test_setup():
-        db.init_db(True)
+def prepare(test):
+    """Test decorator to initialize/clean up database."""
+    def setup():
+        db.init_db()
 
-    test.setup = db_test_setup
+    def teardown():
+        db.remove_db()
+
+    test.setup = setup
+    test.teardown = teardown
     return test

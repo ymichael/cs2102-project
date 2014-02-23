@@ -84,6 +84,7 @@ def check_schema():
     if max_index != latest_executed_schema:
         print "SCHEMA NOT UP-TO-DATE, UPDATE SCHEMA."
 
+
 def update_schema():
     latest_executed_schema = latest_schema()
 
@@ -91,14 +92,22 @@ def update_schema():
         if index > latest_executed_schema:
             exec_schema_change(index, sql)
 
-def init_db(clean=False):
+
+def remove_db():
+    try:
+        os.remove(config.get_config('DATABASE'))
+    except:
+        pass
+
+
+def init_db():
     """Initialize DB.
 
     If clean is True, removes existing database and starts from scratch.
     Used in tests.
     """
-    if clean:
-        os.remove(config.get_config('DATABASE'))
+    if config.get_config('TESTING'):
+        remove_db()
 
     maybe_init_schema()
     check_schema()

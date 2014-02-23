@@ -9,7 +9,7 @@ def test_password():
     assert model.user.check_password(password, hsh)
 
 
-@tests.manage
+@tests.prepare
 def test_user_creation():
     assert model.user.get_number_of_users() == 0
 
