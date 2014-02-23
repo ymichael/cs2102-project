@@ -32,8 +32,12 @@ class User(object):
 
     email = property(get_email, set_email)
 
+    def validate(self):
+        # TODO(michael): Add validation
+        return (self.name and self.email and self.user_id)
+
     def save(self):
-        if not (self.name and self.email and self.user_id):
+        if not self.validate():
             raise Exception('Trying to save invalid user.')
         update_existing_user(self.user_id, self.name, self.email)
 
