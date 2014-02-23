@@ -42,7 +42,9 @@ def exec_schema_change(index, sql):
 
     db.commit()
     db.close()
-    print "Executed: (%s, %s)" % (index, sql)
+
+    if config.get_config('DEBUG'):
+        print "Executed: (%s, %s)" % (index, sql)
 
 
 def latest_schema():
@@ -73,16 +75,22 @@ def list_tables():
 
 
 def check_schema():
-    """Checks that the schema is up-to-date."""
+    """Checks that the schema is up-to-date.
+
+    Returns boolean based on whether schema is up-to-date.
+    """
     latest_executed_schema = latest_schema()
 
     max_index = latest_executed_schema
     for index, sql in schema.SCHEMA:
-        if index > latest_executed_schema:
-            max_index = index
+        max_index = max(max_index, index)
 
     if max_index != latest_executed_schema:
-        print "SCHEMA NOT UP-TO-DATE, UPDATE SCHEMA."
+        if config.get_config('DEBUG'):
+            print "SCHEMA NOT UP-TO-DATE, UPDATE SCHEMA."
+        return False
+
+    return True
 
 
 def update_schema():
