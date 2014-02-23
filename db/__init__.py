@@ -3,7 +3,6 @@ import os
 import config
 import schema
 import mock_data
-from flask import current_app as app
 
 
 def dict_factory(cursor, row):
@@ -20,6 +19,16 @@ def connect_db():
     return db
 
 
+class DatabaseCursor(object):
+    def __enter__(self):
+        self.db = connect_db()
+        return self.db.cursor()
+
+    def __exit__(self, type, value, traceback):
+        self.db.commit()
+        self.db.close()
+
+
 SCHEMA_TABLE_NAME = 'schema_table'
 def maybe_init_schema():
     if SCHEMA_TABLE_NAME not in list_tables():
@@ -29,26 +38,20 @@ def maybe_init_schema():
                 sql_stmt text NOT NULL
             )
         """ % SCHEMA_TABLE_NAME
-        db = connect_db()
-        cursor = db.cursor()
-        cursor.execute(sql)
-        db.commit()
-        db.close()
+
+        with DatabaseCursor() as cursor:
+            cursor.execute(sql)
 
 
 def exec_schema_change(index, sql):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(sql)
-
     update_schema_table = """\
         INSERT INTO %s (id, sql_stmt)
             VALUES (?, ?)
     """ % SCHEMA_TABLE_NAME
-    cursor.execute(update_schema_table, (index, sql))
 
-    db.commit()
-    db.close()
+    with DatabaseCursor() as cursor:
+        cursor.execute(sql)
+        cursor.execute(update_schema_table, (index, sql))
 
     if config.get_config('DEBUG'):
         print "Executed: (%s, %s)" % (index, sql)
@@ -57,10 +60,10 @@ def exec_schema_change(index, sql):
 def latest_schema():
     maybe_init_schema()
     sql = "SELECT MAX(id) AS max FROM %s" % SCHEMA_TABLE_NAME
-    db = connect_db()
-    cursor = db.cursor()
-    result = cursor.execute(sql).fetchone()
-    db.close()
+
+    with DatabaseCursor() as cursor:
+        result = cursor.execute(sql).fetchone()
+
     try:
         return int(result['max'])
     except:
@@ -73,11 +76,8 @@ def list_tables():
         FROM sqlite_master AS s
         WHERE type = 'table'
     """
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(sql)
-    rows = cursor.fetchall()
-    db.close()
+    with DatabaseCursor() as cursor:
+        rows = cursor.execute(sql).fetchall()
 
     return [row['tbl_name'] for row in rows]
 

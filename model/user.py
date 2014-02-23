@@ -39,50 +39,31 @@ def create_new_user(name, email, password):
         INSERT INTO users (name, email, password_hash)
             VALUES (?, ?, ?)"""
 
-    database = db.connect_db()
-    cursor = database.cursor()
-
-    cursor.execute(sql, (name, email, password_hash))
-    database.commit()
-    new_user_id = cursor.lastrowid
-
-    database.close()
+    with db.DatabaseCursor() as cursor:
+        cursor.execute(sql, (name, email, password_hash))
+        new_user_id = cursor.lastrowid
 
     return new_user_id
 
 
 def get_user_info(user_id):
     sql = "SELECT * FROM users WHERE id = ?"
-    database = db.connect_db()
-    cursor = database.cursor()
-    user = cursor.execute(sql, (user_id,)).fetchone()
-    database.close()
+    with db.DatabaseCursor() as cursor:
+        user = cursor.execute(sql, (user_id,)).fetchone()
     return user
 
 
 def get_all_users():
     sql = "SELECT u.id, u.name, u.email FROM users AS u"
-    database = db.connect_db()
-    cursor = database.cursor()
-    rows = cursor.execute(sql).fetchall()
-    database.close()
-
-    users = []
-    for user in rows:
-        users.append({
-            'id': user['id'],
-            'name': user['name'],
-            'email': user['email']
-        })
-    return users
+    with db.DatabaseCursor() as cursor:
+        rows = cursor.execute(sql).fetchall()
+    return rows
 
 
 def get_number_of_users():
     sql = "SELECT COUNT(*) as count FROM users"
-    database = db.connect_db()
-    cursor = database.cursor()
-    row = cursor.execute(sql).fetchone()
-    database.close()
+    with db.DatabaseCursor() as cursor:
+        row = cursor.execute(sql).fetchone()
     return row['count']
 
 
