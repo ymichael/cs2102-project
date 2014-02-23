@@ -1,7 +1,6 @@
 from tests import assert_eq
 import tests
 import model
-import config
 
 
 def test_password():
