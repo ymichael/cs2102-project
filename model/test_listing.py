@@ -71,3 +71,34 @@ def test_number_of_listings():
     assert_eq(model.listing.get_number_of_listings(), 6)
 
 
+@tests.prepare
+def test_all_listings():
+    user_id = db.mock_data.create_fake_user()
+    assert_eq(len(model.listing.get_all_listings()), 0)
+
+    model.listing.create_new_listing(
+        'title', 'description', user_id)
+    assert_eq(len(model.listing.get_all_listings()), 1)
+
+
+@tests.prepare
+def test_get_latest_listings():
+    user_id = db.mock_data.create_fake_user()
+    assert_eq(len(model.listing.get_latest_listings(20)), 0)
+
+    model.listing.create_new_listing(
+        'title1', 'description', user_id)
+    assert_eq(len(model.listing.get_latest_listings(20)), 1)
+
+    model.listing.create_new_listing(
+        'title2', 'description', user_id)
+
+    model.listing.create_new_listing(
+        'title3', 'description', user_id)
+    assert_eq(len(model.listing.get_latest_listings(20)), 3)
+
+    last_two_listings = model.listing.get_latest_listings(2)
+    print last_two_listings
+    assert_eq(len(last_two_listings), 2)
+    assert_eq(last_two_listings[0]['title'], 'title3')
+    assert_eq(last_two_listings[1]['title'], 'title2')

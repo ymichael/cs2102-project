@@ -93,10 +93,20 @@ def get_listing_info(listing_id):
     return obj
 
 
+def get_latest_listings(limit, offset=0):
+    sql = """\
+        SELECT * FROM listings AS l
+        ORDER BY l.id DESC
+        LIMIT ? OFFSET ?"""
+    with db.DatabaseCursor() as cursor:
+        obj = cursor.execute(sql, (limit, offset)).fetchall()
+    return obj
+
+
 def get_all_listings():
     sql = "SELECT * FROM listings"
     with db.DatabaseCursor() as cursor:
-        obj = cursor.execute(sql, (listing_id,)).fetchone()
+        obj = cursor.execute(sql).fetchall()
     return obj
 
 
