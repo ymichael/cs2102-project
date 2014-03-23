@@ -48,12 +48,25 @@ def create_new_user(name, email, password):
     return new_user_id
 
 
+def verify_login(email, password):
+    sql = "SELECT id, password_hash FROM users WHERE email = ?"
+    with db.DatabaseCursor() as cursor:
+        user = cursor.execute(sql, (email,)).fetchone()
+
+    if user is None:
+        return False
+
+    if check_password(password, user['password_hash']):
+        return user['id']
+
+    return False
+
+
 def get_user_info(user_id):
     sql = "SELECT * FROM users WHERE id = ?"
     with db.DatabaseCursor() as cursor:
         user = cursor.execute(sql, (user_id,)).fetchone()
     return user
-
 
 def get_all_users():
     sql = "SELECT u.id, u.name, u.email FROM users AS u"

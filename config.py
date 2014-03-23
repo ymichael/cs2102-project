@@ -22,6 +22,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     DATABASE = ':memory:'
+    SECRET_KEY = 'a6309f5c22b7eb214f7bc2285083f4401032b5b8'
 
 
 

@@ -23,13 +23,34 @@
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
+
+
             </ul>
+            {% if logged_in %}
+                <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.name }} <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Edit Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Help</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Faq</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="/logout">Sign out</a></li>
+                  </ul>
+                </li>
+              </ul>
+            {% endif %}
         </div>
     </div>
 </nav>
 <div class='container'>
 {% block content %}{% endblock %}
 </div>
+<script src="{{ url_for('static', filename='third-party/jquery.min.js')}}"></script>
+<script src="{{ url_for('static', filename='third-party/bootstrap.min.js')}}"></script>
 <script src="{{ url_for('static', filename='js/app.js')}}"></script>
 </body>
 </html>
