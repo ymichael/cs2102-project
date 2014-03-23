@@ -6,6 +6,7 @@ SCHEMA = [
         CREATE TABLE users (
             id integer PRIMARY KEY,
             name varchar(255) NOT NULL,
+            bio text NOT NULL,
             email varchar(255) NOT NULL,
             password_hash varchar(80) NOT NULL,
             create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
@@ -22,4 +23,50 @@ SCHEMA = [
         )
     """),
     (4, """CREATE INDEX listings_owner ON listings (owner_id)"""),
+    (5, """\
+        CREATE TABLE category (
+            id integer PRIMARY KEY,
+            label varchar(255) NOT NULL,
+            description text
+        )
+    """),
+    (6, """\
+        CREATE TABLE listing_categories (
+            listing_id integer NOT NULL,
+            category_id integer NOT NULL,
+            is_main integer,
+            PRIMARY KEY(listing_id, category_id)
+        )
+    """),
+    (7, """\
+        CREATE TABLE comments (
+            id integer PRIMARY KEY,
+            listing_id integer NOT NULL,
+            author_id integer NOT NULL,
+            body text,
+            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+        )
+    """),
+    (8, """\
+        CREATE TABLE hearts (
+            user_id integer NOT NULL,
+            listing_id integer NOT NULL,
+            PRIMARY KEY(user_id, listing_id)
+        )
+    """),
+    (9, """\
+        CREATE TABLE flags (
+            flagger_id integer NOT NULL,
+            listing_id integer NOT NULL,
+            PRIMARY KEY(flagger_id, listing_id)
+        )
+    """),
+    (10, """\
+        CREATE TABLE followers (
+            follower_id integer NOT NULL,
+            following_id integer NOT NULL,
+            PRIMARY KEY(follower_id, following_id)
+        )
+    """),
+
 ]
