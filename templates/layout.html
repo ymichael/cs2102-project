@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app=app>
+<html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="{{ url_for('static', filename='third-party/bootstrap.min.css')}}">
@@ -21,18 +21,20 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-
-
+                {% if logged_in %}
+                    <li><a href="/listing/new">Create New Listing</a></li>
+                {% endif %}
+                <li><a href="/listing/all">All Listings</a></li>
+                <li><a href="/listing/new">New Listings</a></li>
             </ul>
+            <ul class="nav navbar-nav navbar-right">
             {% if logged_in %}
-                <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.name }} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li><a href="#">Edit Profile</a></li>
                     <li class="divider"></li>
+                    <li><a href="#">Help</a></li>
                     <li><a href="#">Help</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#">Faq</a></li>
@@ -41,11 +43,27 @@
                     <li><a href="/logout">Sign out</a></li>
                   </ul>
                 </li>
-              </ul>
+            {% else %}
+                <li><a href="/signup">Sign up</a></li>
             {% endif %}
+            </ul>
         </div>
     </div>
 </nav>
+<div class='container'>
+    {% for error_msg in get_flashed_messages(false, ['error']) %}
+        <div class='alert alert-danger alert-dismissable'>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <p>{{ error_msg }}</p>
+        </div>
+    {% endfor %}
+    {% for info_msg in get_flashed_messages(false, ['info']) %}
+        <div class='alert alert-info alert-dismissable'>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <p>{{ info_msg }}</p>
+        </div>
+    {% endfor %}
+</div>
 <div class='container'>
 {% block content %}{% endblock %}
 </div>

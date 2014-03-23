@@ -2,7 +2,7 @@ import config
 import db
 import model
 import flask
-from flask import g, render_template, Flask, request, session, redirect
+from flask import g, render_template, Flask, request, session, redirect, flash
 import json
 import functools
 
@@ -77,8 +77,8 @@ def listing_new():
         data['title'] = 'New Listing'
         return render_template('listing_new.html', **data)
     else:
-        title = request.form['title']
-        description = request.form['description']
+        title = request.form.get('title')
+        description = request.form.get('description')
         # TODO(michael): Sanitize + validate
 
         new_listing = model.listing.Listing()
@@ -137,11 +137,17 @@ def signup():
         data['title'] = 'Sign Up'
         return render_template('signup.html', **data)
     else:
-        name = request.form['name']
-        email = request.form['email']
-        password = request.form['password']
-        tos = request.form['tos']
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        tos = request.form.get('tos')
         # TODO(michael): sanitize + validate.
+
+        if not tos:
+            flash("Sorry, you need to agree to our terms of service in order to\
+                create an account.", "error")
+            return redirect('/signup')
+
 
         uid = model.user.create_new_user(name, email, password)
         login_user(uid)
@@ -150,11 +156,12 @@ def signup():
 
 @app.route("/login", methods=['POST'])
 def login():
-    email = request.form['email']
-    password = request.form['password']
+    email = request.form.get('email')
+    password = request.form.get('password')
     uid = model.user.verify_login(email, password)
     if uid:
         login_user(uid)
+        flash("Welcome back!", "info")
         return redirect('/')
     else:
         # TODO(michael): Display some error message.
