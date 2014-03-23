@@ -6,7 +6,7 @@ SCHEMA = [
         CREATE TABLE users (
             id integer PRIMARY KEY,
             name varchar(255) NOT NULL,
-            bio text NOT NULL,
+            bio text,
             email varchar(255) NOT NULL,
             password_hash varchar(80) NOT NULL,
             create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL

@@ -12,7 +12,7 @@ app.config.from_object(config.config())
 
 # Initialize db.
 db.init_db()
-db.mock_data.maybe_bootstrap_db()
+# db.mock_data.maybe_bootstrap_db()
 
 
 def get_db():
