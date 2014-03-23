@@ -1,45 +1,29 @@
 import db
+import model
 import hashlib
 import random
 
-class User(object):
+class User(model.base.BaseModel):
+    properties = ['name', 'email']
+
     def __init__(self, user_id=None):
         self.user_id = user_id
 
-    def info(self):
-        if hasattr(self, '_info'):
-            return self._info
+    def check_is_saved(self):
+        return self.user_id
 
-        if self.user_id:
-            self._info = get_user_info(self.user_id) or {}
-            return self._info
+    def get(self):
+        return get_user_info(self.user_id)
 
-        return {}
+    def put(self):
+        update_existing_user(self.user_id, self.name, self.email)
 
-    def get_name(self):
-        return self.info().get('name')
-
-    def set_name(self, value):
-        self.info()['name'] = value
-
-    name = property(get_name, set_name)
-
-    def get_email(self):
-        return self.info().get('email')
-
-    def set_email(self, value):
-        self.info()['email'] = value
-
-    email = property(get_email, set_email)
+    def post(self):
+        raise Exception("Use model.user.create_new_user instead.")
 
     def validate(self):
         # TODO(michael): Add validation
         return (self.name and self.email and self.user_id)
-
-    def save(self):
-        if not self.validate():
-            raise Exception('Trying to save invalid user.')
-        update_existing_user(self.user_id, self.name, self.email)
 
 
 def update_existing_user(user_id, name, email):

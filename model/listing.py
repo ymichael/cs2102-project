@@ -1,65 +1,45 @@
 import db
 import model
 
-class Listing(object):
+class Listing(model.base.BaseModel):
+    properties = ['title', 'description']
+
     def __init__(self, listing_id=None):
+        print 'qwer'
         self.listing_id = listing_id
 
-    def info(self):
-        if hasattr(self, '_info'):
-            return self._info
+    def check_is_saved(self):
+        return self.listing_id
 
-        if self.listing_id:
-            self._info = get_listing_info(self.listing_id) or {}
-        else:
-            self._info = {}
+    def get(self):
+        return get_listing_info(self.listing_id)
 
-        return self._info
+    @property
+    def owner_id(self):
+        return self.get_prop('owner_id')
 
-    def get_title(self):
-        return self.info().get('title')
-
-    def set_title(self, value):
-        self.info()['title'] = value
-
-    title = property(get_title, set_title)
-
-    def get_description(self):
-        return self.info().get('description')
-
-    def set_description(self, value):
-        self.info()['description'] = value
-
-    description = property(get_description, set_description)
-
-    def get_owner_id(self):
-        return self.info().get('owner_id')
-
-    def set_owner_id(self, value):
+    @owner_id.setter
+    def owner_id(self, val):
         if not self.listing_id:
-            # Listings are not trasferrable. So only allow setting if not
+            # Listings are not transferrable. So only allow setting if not
             # created yet.
-            self.info()['owner_id'] = value
-
-    owner_id = property(get_owner_id, set_owner_id)
+            self.set_prop('owner_id', val)
 
     def validate(self):
         # TODO(michael): Refactor, code duplication from model/user.
+        print self.owner_id
         return (self.title and self.description and self.owner_id)
 
-    def save(self):
-        if not self.validate():
-            raise Exception('Trying to save invalid user.',
-                            self.title, self.description, self.owner_id)
+    def put(self):
+        update_existing_listing(
+            self.listing_id, self.title, self.description)
+        return self.listing_id
 
-        if self.listing_id:
-            update_existing_listing(
-                self.listing_id, self.title, self.description)
-        else:
-            new_listing_id = create_new_listing(
-                self.title, self.description, self.owner_id)
-            self.listing_id = new_listing_id
-            return new_listing_id
+    def post(self):
+        new_listing_id = create_new_listing(
+            self.title, self.description, self.owner_id)
+        self.listing_id = new_listing_id
+        return new_listing_id
 
 
 def update_existing_listing(listing_id, title, description):
