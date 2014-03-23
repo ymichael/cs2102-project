@@ -19,7 +19,7 @@ def test_user_creation():
     assert_eq(model.user.get_number_of_users(), 1)
 
     user = model.user.User(user_id)
-    assert_eq(user.user_id, user_id)
+    assert_eq(user.id, user_id)
     assert_eq(user.name, 'michael')
     assert_eq(user.email, 'michael@test.com')
 
@@ -34,7 +34,7 @@ def test_user_update_and_save():
     assert_eq(model.user.get_number_of_users(), 1)
 
     user = model.user.User(user_id)
-    assert_eq(user.user_id, user_id)
+    assert_eq(user.id, user_id)
     assert_eq(user.name, 'michael')
     assert_eq(user.email, 'michael@test.com')
 

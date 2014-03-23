@@ -31,7 +31,7 @@ def test_save_listing():
     listing.description = 'Blah blah'
     listing.owner_id = user_id
     listing_id = listing.save()
-    assert_eq(listing.listing_id, listing_id)
+    assert_eq(listing.id, listing_id)
 
     listing.title = 'Another title.'
     listing.save()
@@ -48,7 +48,7 @@ def test_cant_change_owner():
     listing.description = 'Blah blah'
     listing.owner_id = user_id
     listing_id = listing.save()
-    assert_eq(listing.listing_id, listing_id)
+    assert_eq(listing.id, listing_id)
 
     listing.owner_id = 2
     listing.save()

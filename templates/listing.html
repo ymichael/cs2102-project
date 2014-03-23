@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="row">
+    <h2>{{ listing.title }}</h2>
+    <p>{{ listing.description }}</p>
+    {% if logged_in and logged_in_user == listing.owner_id %}
+        <p><b>you are the owner.</b> <a href="/listing/{{ listing.id }}/edit">edit listing</a></p>
+    {% endif %}
+</div>
+</div>
+
+{% endblock %}

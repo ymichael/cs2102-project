@@ -5,14 +5,13 @@ class Listing(model.base.BaseModel):
     properties = ['title', 'description']
 
     def __init__(self, listing_id=None):
-        print 'qwer'
-        self.listing_id = listing_id
+        self.id = listing_id
 
     def check_is_saved(self):
-        return self.listing_id
+        return self.id
 
     def get(self):
-        return get_listing_info(self.listing_id)
+        return get_listing_info(self.id)
 
     @property
     def owner_id(self):
@@ -20,7 +19,7 @@ class Listing(model.base.BaseModel):
 
     @owner_id.setter
     def owner_id(self, val):
-        if not self.listing_id:
+        if not self.check_is_saved():
             # Listings are not transferrable. So only allow setting if not
             # created yet.
             self.set_prop('owner_id', val)
@@ -32,13 +31,13 @@ class Listing(model.base.BaseModel):
 
     def put(self):
         update_existing_listing(
-            self.listing_id, self.title, self.description)
-        return self.listing_id
+            self.id, self.title, self.description)
+        return self.id
 
     def post(self):
         new_listing_id = create_new_listing(
             self.title, self.description, self.owner_id)
-        self.listing_id = new_listing_id
+        self.id = new_listing_id
         return new_listing_id
 
 

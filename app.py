@@ -4,6 +4,7 @@ import model
 import flask
 from flask import g, render_template, Flask, request, session, redirect
 import json
+import functools
 
 
 app = Flask(__name__)
@@ -37,6 +38,10 @@ def login_user(uid):
     session['logged_in_user'] = uid
 
 
+def logged_in_user():
+    return session['logged_in_user']
+
+
 def is_logged_in():
     return session.get('logged_in')
 
@@ -46,30 +51,87 @@ def logout_user():
     session.pop('logged_in_user')
 
 
+def login_required(route):
+    @functools.wraps(route)
+    def new_route(*args, **kwargs):
+        if not is_logged_in():
+            return redirect('/')
+        return route(*args, **kwargs)
+    return new_route
+
+
 def generic_data_object():
     data = {}
     data['title'] = ''
     data.update(session)
-
     if data.get('logged_in'):
         data['user'] = model.user.get_user_info(data['logged_in_user'])
-
     return data
 
 
-@app.route("/listings")
-def listings():
-    return json.dumps(model.listing.get_latest_listings(20))
+@app.route("/listing/new", methods=['GET', 'POST'])
+@login_required
+def listing_new():
+    if request.method == 'GET':
+        data = generic_data_object()
+        data['title'] = 'New Listing'
+        return render_template('listing_new.html', **data)
+    else:
+        title = request.form['title']
+        description = request.form['description']
+        # TODO(michael): Sanitize + validate
+
+        new_listing = model.listing.Listing()
+        new_listing.owner_id = logged_in_user()
+        new_listing.title = title
+        new_listing.description = description
+        new_listing.save()
+
+        # Redirect to newly created listing's page.
+        return redirect('/listing/%s' % new_listing.id)
 
 
-@app.route("/tos")
-def tos():
-    # TODO(michael)
-    return 'tos here'
+@app.route("/listing/<int:listing_id>")
+def listing(listing_id):
+    data = generic_data_object()
+    data['title'] = 'Listing'
+    data['listing'] = model.listing.Listing(listing_id).info()
+
+    print data
+    return render_template('listing.html', **data)
+
+
+@app.route("/listing/<int:listing_id>/edit", methods=['GET', 'POST'])
+@login_required
+def listing_edit(listing_id):
+    listing = model.listing.Listing(listing_id)
+    if logged_in_user() != listing.owner_id:
+        return redirect('/listing/%s', listing_id)
+
+    if request.method == 'GET':
+        data = generic_data_object()
+        data['title'] = 'Listing'
+        data['listing'] = listing.info()
+        return render_template('listing_edit.html', **data)
+    else:
+        title = request.form['title']
+        description = request.form['description']
+        # TODO(michael): Sanitize + validate
+
+        new_listing = model.listing.Listing(listing_id)
+        new_listing.title = title
+        new_listing.description = description
+        new_listing.save()
+
+        # Redirect to newly created listing's page.
+        return redirect('/listing/%s' % new_listing.id)
 
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
+    if is_logged_in():
+        return redirect('/')
+
     if request.method == 'GET':
         data = generic_data_object()
         data['title'] = 'Sign Up'
@@ -109,6 +171,7 @@ def logout():
 def index():
     data = generic_data_object()
     return render_template('index.html', **data)
+
 
 if __name__ == "__main__":
     app.run()

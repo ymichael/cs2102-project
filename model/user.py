@@ -7,23 +7,23 @@ class User(model.base.BaseModel):
     properties = ['name', 'email']
 
     def __init__(self, user_id=None):
-        self.user_id = user_id
+        self.id = user_id
 
     def check_is_saved(self):
-        return self.user_id
+        return self.id
 
     def get(self):
-        return get_user_info(self.user_id)
+        return get_user_info(self.id)
 
     def put(self):
-        update_existing_user(self.user_id, self.name, self.email)
+        update_existing_user(self.id, self.name, self.email)
 
     def post(self):
         raise Exception("Use model.user.create_new_user instead.")
 
     def validate(self):
         # TODO(michael): Add validation
-        return (self.name and self.email and self.user_id)
+        return (self.name and self.email and self.id)
 
 
 def update_existing_user(user_id, name, email):
