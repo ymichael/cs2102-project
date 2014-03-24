@@ -3,9 +3,14 @@
 <div class="col-md-8">
     <div class="panel row">
         <h2>{{ listing.title }}</h2>
+        <p>
+            {% for c in categories %}
+                <span class="cat-pills label label-primary ">{{ c.label }}</span>
+            {% endfor %}
+        </p>
         <p>{{ listing.description }}</p>
-        {% if logged_in and logged_in_user == listing.owner_id %}
-            <p><b>you are the owner.</b> <a href="/listing/{{ listing.lid }}/edit">edit listing</a></p>
+        {% if logged_in and logged_in_uid == listing.owner_id %}
+            <p><b>You are the owner.</b> <a href="/listing/{{ listing.lid }}/edit">edit listing</a></p>
         {% endif %}
     </div>
     <div class="row">
@@ -29,6 +34,8 @@
 
 </div>
 <div class="col-md-4">
-    {% include 'partials/listing_sidebar.html' %}
+    {% if logged_in and logged_in_uid != listing.owner_id %}
+        {% include 'partials/listing_sidebar.html' %}
+    {% endif %}
 </div>
 {% endblock %}

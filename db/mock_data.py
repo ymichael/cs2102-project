@@ -40,6 +40,7 @@ def maybe_bootstrap_db():
             user_id = create_fake_user()
         print 'INSERTED %s users.' % number_of_users
 
+
     # Listings
     min_listings = 0
     max_listings = 10
@@ -73,3 +74,16 @@ def maybe_bootstrap_db():
                         count += 1
                         comment_count += 1
         print 'INSERTED %s comments.' % comment_count
+
+    # Categories
+    min_categories = 1
+    max_categories = 3
+    cat_count = 0
+    catids = model.category.get_all_cat_ids()
+    if model.category.number_of_listing_categories() == 0:
+        for listing in model.listing.get_all_listings():
+            for cat_id in random.sample(catids, random.randint(min_categories, max_categories)):
+                model.category.add_listing_to_category(listing['lid'], cat_id)
+                cat_count += 1
+            
+        print 'INSERTED %s listing_categories.' % cat_count

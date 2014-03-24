@@ -35,7 +35,6 @@ SCHEMA = [
         CREATE TABLE listing_categories (
             lid integer NOT NULL,
             cat_id integer NOT NULL,
-            is_main integer,
             PRIMARY KEY(lid, cat_id)
         )
     """),
