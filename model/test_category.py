@@ -62,3 +62,19 @@ def test_cat_ids_to_labels():
     assert_eq(
         ['HOUSE', 'ASDF'],
         model.category.cat_ids_to_labels(cat_ids))
+
+
+@tests.prepare
+def test_create_or_retrieve_category():
+    uid = db.mock_data.create_fake_user()
+    lid = db.mock_data.create_fake_listings(uid)
+
+    cat = model.category.Category()
+    cat.label = 'HOUSE'
+    cat_id = cat.save()
+
+    assert_eq(cat_id,
+        model.category.create_or_retrieve_category('HOUSE'))
+
+    cat_id2 = model.category.create_or_retrieve_category('APPLE')
+    assert_eq('APPLE', model.category.Category(cat_id2).label)

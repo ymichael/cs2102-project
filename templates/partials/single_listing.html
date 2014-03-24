@@ -9,7 +9,7 @@
         <p>{{ l.description }}</p>
         <p>
             {% for c in l.categories %}
-                <small class="label label-primary ">{{ c.label }}</small>
+                <small class="label label-primary ">{{ c.label | upper }}</small>
             {% endfor %}
         </p>
         <div class='meta'>

@@ -78,26 +78,29 @@ def generic_data_object():
     return data
 
 
-@app.route("/listing/new", methods=['GET', 'POST'])
+@app.route("/listing/new", methods=['POST'])
 @login_required
 def listing_new():
-    if request.method == 'GET':
-        data = generic_data_object()
-        data['title'] = 'New Listing'
-        return render_template('listing_new.html', **data)
-    else:
-        title = request.form.get('title')
-        description = request.form.get('description')
-        # TODO(michael): Sanitize + validate
+    title = request.form.get('title')
+    description = request.form.get('description')
+    # TODO(michael): Sanitize + validate
 
-        new_listing = model.listing.Listing()
-        new_listing.owner_id = logged_in_user()
-        new_listing.title = title
-        new_listing.description = description
-        new_listing.save()
+    new_listing = model.listing.Listing()
+    new_listing.owner_id = logged_in_user()
+    new_listing.title = title
+    new_listing.description = description
+    new_listing.save()
 
-        # Redirect to newly created listing's page.
-        return redirect('/listing/%s' % new_listing.id)
+    # Comma separated
+    categories = request.form.get('categories')
+    categories = categories.split(',')
+
+    for cat in categories:
+        cat_id = model.category.create_or_retrieve_category(cat)
+        model.category.add_listing_to_category(new_listing.id, cat_id)
+
+    # Redirect to newly created listing's page.
+    return redirect('/listing/%s' % new_listing.id)
 
 
 @app.route("/listing/<int:listing_id>")
@@ -139,6 +142,8 @@ def listing_edit(listing_id):
         data = generic_data_object()
         data['title'] = 'Listing'
         data['listing'] = listing.info()
+        categories = model.category.listing_categories(listing_id)
+        data['categories'] = ', '.join([x['label'] for x in categories])
         return render_template('listing_edit.html', **data)
     else:
         title = request.form['title']
@@ -150,7 +155,21 @@ def listing_edit(listing_id):
         new_listing.description = description
         new_listing.save()
 
-        # Redirect to newly created listing's page.
+        # Update categories
+        categories = request.form.get('categories')
+        categories = [x.upper() for x in categories.split(',')]
+        old_categories = model.category.listing_categories(listing_id)
+        for old_cat in old_categories:
+            if old_cat['label'] not in categories:
+                model.category.remove_listing_from_category(listing_id, old_cat['cat_id'])
+            else:
+                categories.remove(old_cat['label'])
+
+        for cat in categories:
+            cat_id = model.category.create_or_retrieve_category(cat)
+            model.category.add_listing_to_category(new_listing.id, cat_id)
+
+        # Redirect to newly updated listing's page.
         return redirect('/listing/%s' % new_listing.id)
 
 

@@ -83,7 +83,7 @@ def get_all_cat_ids():
 
 def add_listing_to_category(lid, cat_id):
     sql = """\
-        INSERT INTO listing_categories (lid, cat_id)
+        INSERT OR IGNORE INTO listing_categories (lid, cat_id)
             VALUES (?, ?)"""
     with db.DatabaseCursor() as cursor:
         cursor.execute(sql, (lid, cat_id))
@@ -126,3 +126,13 @@ def number_of_listing_categories():
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql).fetchone()
     return obj['count']
+
+
+def create_or_retrieve_category(label):
+    sql = """\
+        SELECT cat_id FROM category WHERE label = ?"""
+    with db.DatabaseCursor() as cursor:
+        obj = cursor.execute(sql, (label.upper(),)).fetchone()
+    if obj and obj['cat_id']:
+        return obj['cat_id']
+    return create_category(label.upper())

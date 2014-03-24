@@ -12,6 +12,11 @@
                 <input name='title' type="text" class="form-control" id="inputTitle" placeholder="Enter listing title" value="{{ listing.title }}">
             </div>
             <div class="form-group">
+                    <label for="inputCats">Categories</label>
+                    <textarea name='categories' class="form-control" id="inputCats"
+                        placeholder="Enter comma seperate categories. Eg. house, cleaning">{{ categories }}</textarea>
+            </div>
+            <div class="form-group">
                 <label for="inputDescription">Description</label>
                 <textarea rows="10" name='description' class='form-control' id='inputDescription' placeholder='Enter listing description'>{{ listing.description }}</textarea>
             </div>

@@ -5,7 +5,7 @@
         <h2>{{ listing.title }}</h2>
         <p>
             {% for c in categories %}
-                <span class="cat-pills label label-primary ">{{ c.label }}</span>
+                <span class="cat-pills label label-primary ">{{ c.label | upper }}</span>
             {% endfor %}
         </p>
         <p>{{ listing.description }}</p>
@@ -31,7 +31,6 @@
             </div>
         </div>
     </div>
-
 </div>
 <div class="col-md-4">
     {% if logged_in and logged_in_uid != listing.owner_id %}
