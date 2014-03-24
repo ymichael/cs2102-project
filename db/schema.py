@@ -41,11 +41,11 @@ SCHEMA = [
     """),
     (7, """\
         CREATE TABLE comments (
+            cid integer PRIMARY KEY,
             lid integer NOT NULL,
             uid integer NOT NULL,
             body text,
-            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            PRIMARY KEY(lid, uid)   
+            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         )
     """),
     (8, """\

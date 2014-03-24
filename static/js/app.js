@@ -9,4 +9,7 @@ $(function() {
             }
         }
     });
+
+    // Listing Tabs
+    $('#listingTabs a:first').tab('show');
 });

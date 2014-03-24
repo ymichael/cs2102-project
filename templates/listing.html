@@ -1,15 +1,34 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="col-md-8">
-	<div class="row">
-	    <h2>{{ listing.title }}</h2>
-	    <p>{{ listing.description }}</p>
-	    {% if logged_in and logged_in_user == listing.owner_id %}
-	        <p><b>you are the owner.</b> <a href="/listing/{{ listing.lid }}/edit">edit listing</a></p>
-	    {% endif %}
-	</div>
+    <div class="panel row">
+        <h2>{{ listing.title }}</h2>
+        <p>{{ listing.description }}</p>
+        {% if logged_in and logged_in_user == listing.owner_id %}
+            <p><b>you are the owner.</b> <a href="/listing/{{ listing.lid }}/edit">edit listing</a></p>
+        {% endif %}
+    </div>
+    <div class="row">
+        <ul class="nav nav-tabs" id='listingTabs'>
+            <li class="active"><a href="#commentTab" data-toggle="tab">Comments</a></li>
+            <li><a href="#relatedTab" data-toggle="tab">Related Listings</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="commentTab">
+                <p>{% include 'partials/comments.html' %}</p>
+            </div>
+            <div class="tab-pane" id="relatedTab">
+                <p>
+                    {% for l in related_listings %}
+                        {% include 'partials/single_listing.html' %}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+    </div>
+
 </div>
 <div class="col-md-4">
-	{% include 'partials/listing_sidebar.html' %}
+    {% include 'partials/listing_sidebar.html' %}
 </div>
 {% endblock %}

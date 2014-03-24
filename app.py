@@ -21,7 +21,7 @@ app.secret_key = config.get_config('SECRET_KEY')
 # Jinja filter
 def format_datetime(value):
     dt = datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
-    return dt.strftime("%d %B")
+    return dt.strftime("%d %B, %H:%M")
 app.jinja_env.filters['datetime'] = format_datetime
 
 
@@ -63,7 +63,7 @@ def login_required(route):
     @functools.wraps(route)
     def new_route(*args, **kwargs):
         if not is_logged_in():
-            return redirect('/')
+            return 'Unauhorized', 401
         return route(*args, **kwargs)
     return new_route
 
@@ -106,7 +106,25 @@ def listing(listing_id):
     data['title'] = 'Listing'
     data['listing'] = model.listing.Listing(listing_id).info()
     data['owner'] = model.user.get_user_info(data['listing']['owner_id'])
+    data['related_listings'] = model.listing.get_related_listings(listing_id, 10)
+    data['comments'] = model.comment.get_comments_for_listing(listing_id)
     return render_template('listing.html', **data)
+
+
+@app.route("/listing/<int:listing_id>/comment", methods=['POST'])
+@login_required
+def listing_comment_new(listing_id):
+    body = request.form.get('comment')
+    # TODO(michael): Sanitize + validate
+
+    new_comment = model.comment.Comment()
+    new_comment.body = body
+    new_comment.uid = logged_in_user()
+    new_comment.lid = listing_id
+    new_comment.save()
+
+    # Redirect to listing's page.
+    return redirect('/listing/%s' % listing_id)
 
 
 @app.route("/listing/<int:listing_id>/edit", methods=['GET', 'POST'])

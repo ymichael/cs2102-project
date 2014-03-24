@@ -1,0 +1,33 @@
+{% if logged_in %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Leave a Comment</h3>
+    </div>
+    <div class="panel-body">
+        <form role="form" method='post' action='/listing/{{ listing.lid }}/comment'>
+            <div class="form-group">
+                <input name='comment' type="text" class="form-control" placeholder="Enter comment...">
+            </div>
+            <button type="submit" class="btn btn-primary">Comment</button>
+        </form>
+    </div>
+</div>
+{% else %}
+    <p>Please login to comment.</p>
+{% endif %}
+{% for c in comments %}
+    <div class="media listing">
+        <a class="pull-left" href="#">
+            <img class="media-object" src="//placehold.it/30">
+        </a>
+        <div class="media-body">
+            <h4 class="media-heading">
+                <a href="/user/{{ c.uid }}">{{ c.name }}</a>
+            </h4>
+            <p>{{ c.body }}</p>
+            <div class='meta'>
+                <span>{{ c.create_time | datetime }}</span>
+            </div>
+        </div>
+    </div>
+{% endfor %}

@@ -102,6 +102,24 @@ def get_listings_info(listing_ids):
     return rows
 
 
+def get_related_listings(listing_id, limit, offset=0):
+    # TODO(michael): tmp implementation.
+    sql = """\
+        SELECT *
+            FROM listings l, users u
+            WHERE l.owner_id = u.uid AND
+                l.owner_id = (
+                    SELECT owner_id FROM listings
+                        WHERE lid = ?) AND
+                l.lid <> ?
+            ORDER BY l.lid DESC
+            LIMIT ? OFFSET ?"""
+    with db.DatabaseCursor() as cursor:
+        obj = cursor.execute(
+            sql, (listing_id, listing_id, limit, offset)).fetchall()
+    return obj
+
+
 def get_latest_listings(limit, offset=0):
     sql = """\
         SELECT *
