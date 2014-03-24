@@ -64,6 +64,7 @@ def login_required(route):
 def generic_data_object():
     data = {}
     data['title'] = ''
+    data['q'] = ''
     data.update(session)
     if data.get('logged_in'):
         data['user'] = model.user.get_user_info(data['logged_in_user'])
@@ -173,6 +174,16 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@app.route("/search")
+def search():
+    query = request.args.get('q')
+    data = generic_data_object()
+    data['q'] = query
+    data['results'] = model.listing.get_listings_info(
+        model.search.listings(query, 20))
+    return render_template('search.html', **data)
 
 
 @app.route("/")

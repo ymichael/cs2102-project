@@ -27,6 +27,11 @@
                 <li><a href="/listing/all">All Listings</a></li>
                 <li><a href="/listing/new">New Listings</a></li>
             </ul>
+            <form id='searchForm' class="navbar-form navbar-left" role="search" action='/search'>
+                <div class="form-group">
+                    <input id='searchInput' name='q' type="text" class="form-control" placeholder="Search" value="{{ q }}">
+                </div>
+            </form>
             <ul class="nav navbar-nav navbar-right">
             {% if logged_in %}
                 <li class="dropdown">
