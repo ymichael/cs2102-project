@@ -180,7 +180,8 @@ def logout():
 def search():
     results_per_page = 20
     query = request.args.get('q')
-    page = int(request.args.get('p')) or 1
+    page = request.args.get('p') or 1
+    page = int(page)
 
     data = generic_data_object()
     data['q'] = query
@@ -197,6 +198,7 @@ def search():
 @app.route("/")
 def index():
     data = generic_data_object()
+    data['listings'] = model.listing.get_latest_listings(20)
     return render_template('index.html', **data)
 
 

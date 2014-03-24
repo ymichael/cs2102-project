@@ -3,11 +3,12 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="{{ url_for('static', filename='third-party/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>{{ title }}</title>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -19,14 +20,6 @@
             <a class="navbar-brand" href="/">Project name</a>
         </div>
         <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                {% if logged_in %}
-                    <li><a href="/listing/new">Create New Listing</a></li>
-                {% endif %}
-                <li><a href="/listing/all">All Listings</a></li>
-                <li><a href="/listing/new">New Listings</a></li>
-            </ul>
             <form id='searchForm' class="navbar-form navbar-left" role="search" action='/search'>
                 <div class="form-group">
                     <input id='searchInput' name='q' type="text" class="form-control" placeholder="Search" value="{{ q }}">
@@ -40,16 +33,17 @@
                     <li><a href="#">Edit Profile</a></li>
                     <li class="divider"></li>
                     <li><a href="#">Help</a></li>
-                    <li><a href="#">Help</a></li>
                     <li><a href="#">About</a></li>
-                    <li><a href="#">Faq</a></li>
+                    <li><a href="#">FAQ</a></li>
                     <li class="divider"></li>
                     <li><a href="#">Settings</a></li>
                     <li><a href="/logout">Sign out</a></li>
                   </ul>
                 </li>
             {% else %}
-                <li><a href="/signup">Sign up</a></li>
+                {% if request.path != '/signup' %}
+                    <li><a href="/signup">Sign up</a></li>
+                {% endif %}
             {% endif %}
             </ul>
         </div>
@@ -70,7 +64,7 @@
     {% endfor %}
 </div>
 <div class='container'>
-{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 </div>
 <script src="{{ url_for('static', filename='third-party/jquery.min.js')}}"></script>
 <script src="{{ url_for('static', filename='third-party/bootstrap.min.js')}}"></script>

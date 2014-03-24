@@ -1,0 +1,14 @@
+#searchInput {
+	width: 400px;
+	min-width: 100%;
+	max-width: 100%;
+}
+
+/* To prevent fixed nav from overlapping content. */
+body {
+	padding-top: 70px;
+}
+
+.page-header {
+	margin-top: 0px;
+}

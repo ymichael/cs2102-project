@@ -1,0 +1,45 @@
+{% if logged_in %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">New Listing</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method='post' action='/listing/new'>
+                <div class="form-group">
+                    <label for="inputTitle">Title</label>
+                    <input name='title' type="text" class="form-control" id="inputTitle" placeholder="Enter listing title">
+                </div>
+                <div class="form-group">
+                    <label for="inputDescription">Description</label>
+                    <textarea rows="10" name='description' class='form-control' id='inputDescription' placeholder='Enter listing description'></textarea>
+                </div>
+                <button type="submit" class="btn btn-default">Create</button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Sign In</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method='post' action='/login'>
+                <div class="form-group">
+                    <label for="inputEmail">Email address</label>
+                    <input name='email' type="text" class="form-control" id="inputEmail" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword">Password</label>
+                    <input name='password' type="password" class="form-control" id="inputPassword" placeholder="Password">
+                    <p class="help-block"><a href="#">Forgot Password?</a></p>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input name='rmbme' type="checkbox"> Remember Me
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+{% endif %}
