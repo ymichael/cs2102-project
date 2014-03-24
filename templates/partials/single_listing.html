@@ -7,6 +7,11 @@
             <a href="/listing/{{ l.lid }}">{{ l.title }}</a>
         </h4>
         <p>{{ l.description }}</p>
+        <p>
+            {% for c in l.categories %}
+                <small class="label label-primary ">{{ c.label }}</small>
+            {% endfor %}
+        </p>
         <div class='meta'>
             <span>{{ l.create_time | datetime }}</span>
             &middot;

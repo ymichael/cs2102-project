@@ -213,10 +213,14 @@ def search():
     data['p'] = page
     data['total_results'] = model.search.listings_count(query)
     data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
-    data['results'] = model.listing.get_listings_info(
+    listings = model.listing.get_listings_info(
         model.search.listings(
             query, results_per_page,
             (page - 1) * results_per_page))
+    # TODO(michael): Super inefficient.
+    for l in listings:
+        l['categories'] = model.category.listing_categories(l['lid'])
+    data['results'] = listings
     return render_template('search.html', **data)
 
 
@@ -283,7 +287,11 @@ def user(uid):
 @app.route("/")
 def index():
     data = generic_data_object()
-    data['listings'] = model.listing.get_latest_listings(20)
+    listings = model.listing.get_latest_listings(20)
+    # TODO(michael): Super inefficient.
+    for l in listings:
+        l['categories'] = model.category.listing_categories(l['lid'])
+    data['listings'] = listings
     return render_template('index.html', **data)
 
 
