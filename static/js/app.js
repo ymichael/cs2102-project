@@ -12,4 +12,7 @@ $(function() {
 
     // Listing Tabs
     $('#listingTabs a:first').tab('show');
+
+    // Search date
+    $("#inputDate").datepicker()
 });
