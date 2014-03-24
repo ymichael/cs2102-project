@@ -7,5 +7,12 @@
             <a href="/listing/{{ l.lid }}">{{ l.title }}</a>
         </h4>
         <p>{{ l.description }}</p>
+        <div class='meta'>
+            <span>{{ l.create_time | datetime }}</span>
+            &middot;
+            <span>{{ l.name | title }}</span>
+        </div>
+    </div>
+    <div>
     </div>
 </div>

@@ -12,3 +12,9 @@ body {
 .page-header {
 	margin-top: 0px;
 }
+
+.listing {
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: solid 1px #eee;
+}

@@ -4,6 +4,7 @@ import model
 import flask
 import json
 import functools
+import datetime
 
 from flask import g
 from flask import render_template
@@ -16,6 +17,12 @@ from flask import flash
 app = Flask(__name__)
 app.config.from_object(config.config())
 app.secret_key = config.get_config('SECRET_KEY')
+
+# Jinja filter
+def format_datetime(value):
+    dt = datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+    return dt.strftime("%d %B")
+app.jinja_env.filters['datetime'] = format_datetime
 
 
 def get_db():

@@ -104,9 +104,11 @@ def get_listings_info(listing_ids):
 
 def get_latest_listings(limit, offset=0):
     sql = """\
-        SELECT * FROM listings AS l
-        ORDER BY l.lid DESC
-        LIMIT ? OFFSET ?"""
+        SELECT *
+            FROM listings l, users u
+            WHERE l.owner_id = u.uid
+            ORDER BY l.lid DESC
+            LIMIT ? OFFSET ?"""
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql, (limit, offset)).fetchall()
     return obj
