@@ -35,10 +35,7 @@ def test_get_listings_info():
         listing_id = listing.save()
         ids.append(listing_id)
 
-    new_listing_obj = model.listing.Listing(listing_id)
-
-    print model.listing.get_listings_info(ids)
-
+    print ids, model.listing.get_listings_info(ids)
     assert_eq(
         ids,
         [x['lid'] for x in model.listing.get_listings_info(ids)])
@@ -129,7 +126,7 @@ def test_get_latest_listings():
     user_id = db.mock_data.create_fake_user()
     assert_eq(len(model.listing.get_latest_listings(20)), 0)
 
-    model.listing.create_new_listing(
+    lid = model.listing.create_new_listing(
         'title1', 'description', user_id)
     assert_eq(len(model.listing.get_latest_listings(20)), 1)
 

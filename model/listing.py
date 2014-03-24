@@ -94,8 +94,11 @@ def get_listings_info(listing_ids):
     sql = """\
         SELECT *
             FROM listings l, users u, (
-                SELECT lid, COUNT(*) AS comment_count
-                    FROM comments GROUP BY lid) c
+                SELECT l.lid, COUNT(*) AS comment_count
+                    FROM listings l
+                        LEFT JOIN comments c
+                            ON l.lid = c.lid
+                    GROUP BY l.lid) c
             WHERE l.lid IN (%s) AND
                 c.lid = l.lid AND
                 l.owner_id = u.uid
@@ -105,13 +108,35 @@ def get_listings_info(listing_ids):
     return rows
 
 
+def get_listings_for_user(uid):
+    sql = """\
+        SELECT *
+            FROM listings l, users u, (
+                SELECT l.lid, COUNT(*) AS comment_count
+                    FROM listings l
+                        LEFT JOIN comments c
+                            ON l.lid = c.lid
+                    GROUP BY l.lid) c
+            WHERE l.owner_id = u.uid AND
+                c.lid = l.lid AND
+                l.owner_id = ?
+            ORDER BY l.lid DESC"""
+    with db.DatabaseCursor() as cursor:
+        obj = cursor.execute(
+            sql, (uid,)).fetchall()
+    return obj
+
+
 def get_related_listings(listing_id, limit, offset=0):
     # TODO(michael): tmp implementation.
     sql = """\
         SELECT *
             FROM listings l, users u, (
-                SELECT lid, COUNT(*) AS comment_count
-                    FROM comments GROUP BY lid) c
+                SELECT l.lid, COUNT(*) AS comment_count
+                    FROM listings l
+                        LEFT JOIN comments c
+                            ON l.lid = c.lid
+                    GROUP BY l.lid) c
             WHERE l.owner_id = u.uid AND
                 c.lid = l.lid AND
                 l.owner_id = (
@@ -126,12 +151,27 @@ def get_related_listings(listing_id, limit, offset=0):
     return obj
 
 
+def test():
+    sql = """\
+        SELECT l.lid, COUNT(*) AS comment_count
+            FROM listings l
+                LEFT JOIN comments c
+                    ON l.lid = c.lid
+            GROUP BY l.lid"""
+    with db.DatabaseCursor() as cursor:
+        obj = cursor.execute(sql).fetchall()
+    return obj
+
+
 def get_latest_listings(limit, offset=0):
     sql = """\
         SELECT *
             FROM listings l, users u, (
-                SELECT lid, COUNT(*) AS comment_count
-                    FROM comments GROUP BY lid) c
+                SELECT l.lid, COUNT(*) AS comment_count
+                    FROM listings l
+                        LEFT JOIN comments c
+                            ON l.lid = c.lid
+                    GROUP BY l.lid) c
             WHERE l.owner_id = u.uid AND
                 c.lid = l.lid
             ORDER BY l.lid DESC
