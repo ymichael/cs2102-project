@@ -30,11 +30,11 @@ def test_listing_search_query():
         model.listing.create_new_listing(
             title, description, user_id)
 
-    assert_eq(3, len(model.search.listing_search('apple', 20)))
-    assert_eq(3, len(model.search.listing_search('orange', 20)))
-    assert_eq(4, len(model.search.listing_search('pear', 20)))
-    assert_eq(4, len(model.search.listing_search('peach', 20)))
-    assert_eq(0, len(model.search.listing_search('grapes', 20)))
+    assert_eq(3, len(model.search.listings('apple', 20)))
+    assert_eq(3, len(model.search.listings('orange', 20)))
+    assert_eq(4, len(model.search.listings('pear', 20)))
+    assert_eq(4, len(model.search.listings('peach', 20)))
+    assert_eq(0, len(model.search.listings('grapes', 20)))
 
 
 @tests.prepare
@@ -54,9 +54,9 @@ def test_listing_search_query_trigger_update():
             l.description = "pineapple"
         l.save()
 
-    assert_eq(3, len(model.search.listing_search('pineapple', 20)))
-    assert_eq(2, len(model.search.listing_search('mango', 20)))
-    assert_eq(2, len(model.search.listing_search('pear', 20)))
+    assert_eq(3, len(model.search.listings('pineapple', 20)))
+    assert_eq(2, len(model.search.listings('mango', 20)))
+    assert_eq(2, len(model.search.listings('pear', 20)))
 
 
 @tests.prepare

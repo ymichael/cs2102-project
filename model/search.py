@@ -1,7 +1,8 @@
 import db
 
 
-def listing_search(query, limit, offset=0):
+def listings(query, limit, offset=0):
+    """Returns a list of listing_ids matching the query."""
     sql = """\
         SELECT listing_id FROM listing_search
             WHERE content MATCH ?
@@ -9,7 +10,7 @@ def listing_search(query, limit, offset=0):
     with db.DatabaseCursor() as cursor:
         matching_listings = \
             cursor.execute(sql, (query, limit, offset)).fetchall()
-    return matching_listings
+    return [x['listing_id'] for x in matching_listings]
 
 
 def all_listing_search_entries():
