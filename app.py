@@ -150,7 +150,6 @@ def signup():
                 create an account.", "error")
             return redirect('/signup')
 
-
         uid = model.user.create_new_user(name, email, password)
         login_user(uid)
         return redirect('/')
@@ -166,7 +165,7 @@ def login():
         flash("Welcome back!", "info")
         return redirect('/')
     else:
-        # TODO(michael): Display some error message.
+        flash("Invalid login credentials.", "error")
         return redirect('/')
 
 

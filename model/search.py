@@ -4,13 +4,13 @@ import db
 def listings(query, limit, offset=0):
     """Returns a list of listing_ids matching the query."""
     sql = """\
-        SELECT listing_id FROM listing_search
+        SELECT lid FROM listing_search
             WHERE content MATCH ?
             LIMIT ? OFFSET ?"""
     with db.DatabaseCursor() as cursor:
         matching_listings = \
             cursor.execute(sql, (query, limit, offset)).fetchall()
-    return [x['listing_id'] for x in matching_listings]
+    return [x['lid'] for x in matching_listings]
 
 
 def listings_count(query):

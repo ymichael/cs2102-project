@@ -50,7 +50,7 @@ class Listing(model.base.BaseModel):
 
 
 def delete_listing(listing_id):
-    sql = """DELETE FROM listings WHERE id = ?"""
+    sql = """DELETE FROM listings WHERE lid = ?"""
     with db.DatabaseCursor() as cursor:
         cursor.execute(sql, (listing_id,))
 
@@ -59,7 +59,7 @@ def update_existing_listing(listing_id, title, description):
     sql = """\
         UPDATE listings
         SET title = ?, description = ?, last_update_time = ?
-        WHERE id = ?"""
+        WHERE lid = ?"""
     with db.DatabaseCursor() as cursor:
         now = datetime.datetime.now()
         cursor.execute(sql, (title, description, now, listing_id))
@@ -81,15 +81,22 @@ def create_new_listing(title, description, owner_id):
 
 
 def get_listing_info(listing_id):
-    sql = "SELECT * FROM listings WHERE id = ?"
+    sql = """\
+        SELECT *
+            FROM listings
+            WHERE lid = ?"""
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql, (listing_id,)).fetchone()
     return obj
 
 
 def get_listings_info(listing_ids):
-    sql = "SELECT * FROM listings WHERE id IN (%s)" % \
-        ','.join('?' * len(listing_ids))
+    sql = """\
+        SELECT *
+            FROM listings l, users u
+            WHERE l.lid IN (%s) AND
+                l.owner_id = u.uid
+        """ % ','.join('?' * len(listing_ids))
     with db.DatabaseCursor() as cursor:
         rows = cursor.execute(sql, listing_ids).fetchall()
     return rows
@@ -98,7 +105,7 @@ def get_listings_info(listing_ids):
 def get_latest_listings(limit, offset=0):
     sql = """\
         SELECT * FROM listings AS l
-        ORDER BY l.id DESC
+        ORDER BY l.lid DESC
         LIMIT ? OFFSET ?"""
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql, (limit, offset)).fetchall()

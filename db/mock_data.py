@@ -40,6 +40,6 @@ def maybe_bootstrap_db():
         for user in model.user.get_all_users():
             for _ in xrange(random.randint(min_listings, max_listings)):
                 count += 1
-                create_fake_listings(user['id'])
+                create_fake_listings(user['uid'])
 
         print 'INSERTED %s listings.' % count

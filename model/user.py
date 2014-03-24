@@ -35,7 +35,7 @@ def update_existing_user(user_id, name, email):
     sql = """\
         UPDATE users
         SET name = ?, email = ?
-        WHERE id = ?"""
+        WHERE uid = ?"""
     with db.DatabaseCursor() as cursor:
         cursor.execute(sql, (name, email, user_id))
 
@@ -54,7 +54,7 @@ def create_new_user(name, email, password):
 
 
 def verify_login(email, password):
-    sql = "SELECT id, password_hash FROM users WHERE email = ?"
+    sql = "SELECT uid, password_hash FROM users WHERE email = ?"
     with db.DatabaseCursor() as cursor:
         user = cursor.execute(sql, (email,)).fetchone()
 
@@ -62,19 +62,19 @@ def verify_login(email, password):
         return False
 
     if check_password(password, user['password_hash']):
-        return user['id']
+        return user['uid']
 
     return False
 
 
 def get_user_info(user_id):
-    sql = "SELECT * FROM users WHERE id = ?"
+    sql = "SELECT * FROM users WHERE uid = ?"
     with db.DatabaseCursor() as cursor:
         user = cursor.execute(sql, (user_id,)).fetchone()
     return user
 
 def get_all_users():
-    sql = "SELECT u.id, u.name, u.email FROM users AS u"
+    sql = "SELECT u.uid, u.name, u.email FROM users AS u"
     with db.DatabaseCursor() as cursor:
         rows = cursor.execute(sql).fetchall()
     return rows

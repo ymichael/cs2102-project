@@ -36,10 +36,12 @@ def test_get_listings_info():
         ids.append(listing_id)
 
     new_listing_obj = model.listing.Listing(listing_id)
+
+    print model.listing.get_listings_info(ids)
+
     assert_eq(
-        [model.listing.get_listing_info(ids[0]),
-            model.listing.get_listing_info(ids[1])],
-        model.listing.get_listings_info(ids))
+        ids,
+        [x['lid'] for x in model.listing.get_listings_info(ids)])
 
 
 @tests.prepare

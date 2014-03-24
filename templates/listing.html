@@ -5,10 +5,11 @@
 	    <h2>{{ listing.title }}</h2>
 	    <p>{{ listing.description }}</p>
 	    {% if logged_in and logged_in_user == listing.owner_id %}
-	        <p><b>you are the owner.</b> <a href="/listing/{{ listing.id }}/edit">edit listing</a></p>
+	        <p><b>you are the owner.</b> <a href="/listing/{{ listing.lid }}/edit">edit listing</a></p>
 	    {% endif %}
 	</div>
 </div>
 <div class="col-md-4">
+	{% include 'partials/listing_sidebar.html' %}
 </div>
 {% endblock %}
