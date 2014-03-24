@@ -93,8 +93,11 @@ def get_listing_info(listing_id):
 def get_listings_info(listing_ids):
     sql = """\
         SELECT *
-            FROM listings l, users u
+            FROM listings l, users u, (
+                SELECT lid, COUNT(*) AS comment_count
+                    FROM comments GROUP BY lid) c
             WHERE l.lid IN (%s) AND
+                c.lid = l.lid AND
                 l.owner_id = u.uid
         """ % ','.join('?' * len(listing_ids))
     with db.DatabaseCursor() as cursor:
@@ -106,8 +109,11 @@ def get_related_listings(listing_id, limit, offset=0):
     # TODO(michael): tmp implementation.
     sql = """\
         SELECT *
-            FROM listings l, users u
+            FROM listings l, users u, (
+                SELECT lid, COUNT(*) AS comment_count
+                    FROM comments GROUP BY lid) c
             WHERE l.owner_id = u.uid AND
+                c.lid = l.lid AND
                 l.owner_id = (
                     SELECT owner_id FROM listings
                         WHERE lid = ?) AND
@@ -123,8 +129,11 @@ def get_related_listings(listing_id, limit, offset=0):
 def get_latest_listings(limit, offset=0):
     sql = """\
         SELECT *
-            FROM listings l, users u
-            WHERE l.owner_id = u.uid
+            FROM listings l, users u, (
+                SELECT lid, COUNT(*) AS comment_count
+                    FROM comments GROUP BY lid) c
+            WHERE l.owner_id = u.uid AND
+                c.lid = l.lid
             ORDER BY l.lid DESC
             LIMIT ? OFFSET ?"""
     with db.DatabaseCursor() as cursor:
