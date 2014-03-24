@@ -107,7 +107,7 @@ def listing(listing_id):
     data['listing'] = model.listing.Listing(listing_id).info()
     data['owner'] = model.user.get_user_info(data['listing']['owner_id'])
     data['related_listings'] = model.listing.get_related_listings(listing_id, 10)
-    data['comments'] = model.comment.get_comments_for_listing(listing_id)
+    data['comments'] = model.comment.get_comments_for_listing(listing_id, time_ordered=False)
     return render_template('listing.html', **data)
 
 
