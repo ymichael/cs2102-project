@@ -2,19 +2,20 @@ import config
 import db
 import model
 import flask
-from flask import g, render_template, Flask, request, session, redirect, flash
 import json
 import functools
 
+from flask import g
+from flask import render_template
+from flask import Flask
+from flask import request
+from flask import session
+from flask import redirect
+from flask import flash
 
 app = Flask(__name__)
 app.config.from_object(config.config())
 app.secret_key = config.get_config('SECRET_KEY')
-
-
-# Initialize db.
-db.init_db()
-# db.mock_data.maybe_bootstrap_db()
 
 
 def get_db():
@@ -180,5 +181,13 @@ def index():
     return render_template('index.html', **data)
 
 
-if __name__ == "__main__":
+def main():
+    # Initialize db/fts
+    db.init()
+    db.fts.init()
+    db.mock_data.maybe_bootstrap_db()
     app.run()
+
+
+if __name__ == "__main__":
+    main()

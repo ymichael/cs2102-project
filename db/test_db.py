@@ -13,16 +13,16 @@ class TestDb(tests.TestController):
     def test_list_tables(self):
         assert 'schema_table' in db.list_tables()
 
-        db.remove_db()
+        db.remove()
         assert_eq(db.list_tables(), [])
 
     def test_latest_schema(self):
         assert_eq(db.latest_schema(), self.latest)
-        db.remove_db()
+        db.remove()
         assert_eq(db.latest_schema(), 0)
 
     def test_check_schema(self):
-        db.remove_db()
+        db.remove()
         if self.latest != 0:
             assert not db.check_schema()
 

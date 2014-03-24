@@ -10,20 +10,20 @@ class TestController(object):
     def setup(self):
         self.app = app.app.test_client()
         self.db = db.connect_db()
-        db.init_db()
+        db.init()
 
     def teardown(self):
         self.db.close()
-        db.remove_db()
+        db.remove()
 
 
 def prepare(test):
     """Test decorator to initialize/clean up database."""
     def setup():
-        db.init_db()
+        db.init()
 
     def teardown():
-        db.remove_db()
+        db.remove()
 
     test.setup = setup
     test.teardown = teardown

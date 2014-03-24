@@ -45,6 +45,15 @@ class Listing(model.base.BaseModel):
         self.id = new_listing_id
         return new_listing_id
 
+    def delete(self):
+        delete_listing(self.id)
+
+
+def delete_listing(listing_id):
+    sql = """DELETE FROM listings WHERE id = ?"""
+    with db.DatabaseCursor() as cursor:
+        cursor.execute(sql, (listing_id,))
+
 
 def update_existing_listing(listing_id, title, description):
     sql = """\

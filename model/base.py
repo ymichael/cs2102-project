@@ -32,6 +32,11 @@ class BaseModel(object):
         Corresponds to GET request."""
         raise NotImplementedError()
 
+    def delete(self):
+        """Deletes object from the database.
+
+        Corresponds to DEL request."""
+        raise NotImplementedError()
 
     def validate(self):
         """Returns True if model passes validation.

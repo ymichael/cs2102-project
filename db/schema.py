@@ -69,5 +69,34 @@ SCHEMA = [
             PRIMARY KEY(follower_id, following_id)
         )
     """),
+    (11, """\
+        CREATE VIRTUAL TABLE listing_search
+            USING fts4(listing_id INT, title, description)
+    """),
+    (12, """\
+        CREATE TRIGGER listing_search_insert
+            AFTER INSERT ON listings
+            BEGIN
+                INSERT INTO listing_search(listing_id, title, description)
+                    VALUES (new.id, new.title, new.description);
+            END
+    """),
+    (13, """\
+        CREATE TRIGGER listing_search_update
+            AFTER UPDATE ON listings
+            BEGIN
+                UPDATE listing_search
+                    SET title = new.title, description = new.description
+                    WHERE listing_id = new.id;
+            END
+    """),
+    (14, """\
+        CREATE TRIGGER listing_search_delete
+            AFTER DELETE ON listings
+            BEGIN
+                DELETE FROM listing_search
+                    WHERE listing_id = old.id;
+            END
+    """),
 
 ]

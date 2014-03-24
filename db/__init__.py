@@ -3,6 +3,7 @@ import os
 import config
 import schema
 import mock_data
+import fts
 
 
 def dict_factory(cursor, row):
@@ -109,21 +110,21 @@ def update_schema():
             exec_schema_change(index, sql)
 
 
-def remove_db():
+def remove():
     try:
         os.remove(config.get_config('DATABASE'))
     except:
         pass
 
 
-def init_db():
+def init():
     """Initialize DB.
 
     If clean is True, removes existing database and starts from scratch.
     Used in tests.
     """
     if config.get_config('TESTING'):
-        remove_db()
+        remove()
 
     maybe_init_schema()
     check_schema()
