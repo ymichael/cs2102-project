@@ -87,6 +87,14 @@ def get_listing_info(listing_id):
     return obj
 
 
+def get_listings_info(listing_ids):
+    sql = "SELECT * FROM listings WHERE id IN (%s)" % \
+        ','.join('?' * len(listing_ids))
+    with db.DatabaseCursor() as cursor:
+        rows = cursor.execute(sql, listing_ids).fetchall()
+    return rows
+
+
 def get_latest_listings(limit, offset=0):
     sql = """\
         SELECT * FROM listings AS l
@@ -95,7 +103,6 @@ def get_latest_listings(limit, offset=0):
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql, (limit, offset)).fetchall()
     return obj
-
 
 def get_all_listings():
     sql = "SELECT * FROM listings"

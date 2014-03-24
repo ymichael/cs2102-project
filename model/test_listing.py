@@ -22,6 +22,27 @@ def test_create_listing():
 
 
 @tests.prepare
+def test_get_listings_info():
+    user_id = db.mock_data.create_fake_user()
+    assert_eq(model.user.get_number_of_users(), 1)
+
+    ids = []
+    for i in xrange(2):
+        listing = model.listing.Listing()
+        listing.title = 'My awesome thing.'
+        listing.description = 'Blah blah'
+        listing.owner_id = user_id
+        listing_id = listing.save()
+        ids.append(listing_id)
+
+    new_listing_obj = model.listing.Listing(listing_id)
+    assert_eq(
+        [model.listing.get_listing_info(ids[0]),
+            model.listing.get_listing_info(ids[1])],
+        model.listing.get_listings_info(ids))
+
+
+@tests.prepare
 def test_save_listing():
     user_id = db.mock_data.create_fake_user()
     assert_eq(model.user.get_number_of_users(), 1)
