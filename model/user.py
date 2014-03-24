@@ -4,7 +4,12 @@ import hashlib
 import random
 
 class User(model.base.BaseModel):
-    properties = ['name', 'email']
+    properties = [
+        'name',
+        'email',
+        'bio',
+        'create_time',
+    ]
 
     def __init__(self, user_id=None):
         self.id = user_id

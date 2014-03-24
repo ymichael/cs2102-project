@@ -6,7 +6,6 @@ import app
 # Helpers
 assert_eq = nose.tools.eq_
 
-
 class TestController(object):
     def setup(self):
         self.app = app.app.test_client()

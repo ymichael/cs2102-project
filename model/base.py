@@ -13,11 +13,14 @@ class BaseModel(object):
             return self._info
 
         if self.check_is_saved():
-            self._info = self.get() or {}
+            self.hard_get()
         else:
             self._info = {}
         
         return self._info
+
+    def hard_get(self):
+        self._info = self.get() or {}
 
     def check_is_saved(self):
         """Returns True if model has been saved to the db before."""
@@ -53,9 +56,13 @@ class BaseModel(object):
         if not self.validate():
             raise Exception('Trying to save invalid Model.')
         if self.check_is_saved():
-            return self.put()
+            retval = self.put()
         else:
-            return self.post()
+            retval = self.post()
+
+        # Update self._info object.
+        self.hard_get()
+        return retval
 
     def set_prop(self, attr, val):
         self.info()[attr] = val

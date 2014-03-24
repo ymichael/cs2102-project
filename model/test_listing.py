@@ -36,6 +36,26 @@ def test_save_listing():
     listing.title = 'Another title.'
     listing.save()
     assert_eq(listing.title, 'Another title.')
+    assert listing.last_update_time != listing.create_time
+
+
+@tests.prepare
+def test_update_listing():
+    user_id = db.mock_data.create_fake_user()
+    assert_eq(model.user.get_number_of_users(), 1)
+
+    listing = model.listing.Listing()
+    listing.title = 'My awesome thing.'
+    listing.description = 'Blah blah'
+    listing.owner_id = user_id
+    listing_id = listing.save()
+    assert_eq(listing.id, listing_id)
+
+    listing.title = 'Another title.'
+    listing.save()
+
+    assert_eq(listing.title, 'Another title.')
+    assert_eq(listing.title, 'Another title.')
 
 
 @tests.prepare
@@ -98,7 +118,6 @@ def test_get_latest_listings():
     assert_eq(len(model.listing.get_latest_listings(20)), 3)
 
     last_two_listings = model.listing.get_latest_listings(2)
-    print last_two_listings
     assert_eq(len(last_two_listings), 2)
     assert_eq(last_two_listings[0]['title'], 'title3')
     assert_eq(last_two_listings[1]['title'], 'title2')

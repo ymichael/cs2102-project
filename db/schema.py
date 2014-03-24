@@ -19,7 +19,8 @@ SCHEMA = [
             title varchar(255) NOT NULL,
             description text,
             owner_id integer NOT NULL,
-            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            last_update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         )
     """),
     (4, """CREATE INDEX listings_owner ON listings (owner_id)"""),

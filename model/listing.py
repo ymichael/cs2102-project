@@ -1,8 +1,14 @@
 import db
 import model
+import datetime
 
 class Listing(model.base.BaseModel):
-    properties = ['title', 'description']
+    properties = [
+        'title',
+        'description',
+        'create_time',
+        'last_update_time',
+    ]
 
     def __init__(self, listing_id=None):
         self.id = listing_id
@@ -26,7 +32,6 @@ class Listing(model.base.BaseModel):
 
     def validate(self):
         # TODO(michael): Refactor, code duplication from model/user.
-        print self.owner_id
         return (self.title and self.description and self.owner_id)
 
     def put(self):
@@ -44,10 +49,11 @@ class Listing(model.base.BaseModel):
 def update_existing_listing(listing_id, title, description):
     sql = """\
         UPDATE listings
-        SET title = ?, description = ?
+        SET title = ?, description = ?, last_update_time = ?
         WHERE id = ?"""
     with db.DatabaseCursor() as cursor:
-        cursor.execute(sql, (title, description, listing_id))
+        now = datetime.datetime.now()
+        cursor.execute(sql, (title, description, now, listing_id))
 
 
 def create_new_listing(title, description, owner_id):
