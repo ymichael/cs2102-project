@@ -31,10 +31,15 @@ def test_listing_search_query():
             title, description, user_id)
 
     assert_eq(3, len(model.search.listings('apple', 20)))
+    assert_eq(3, model.search.listings_count('apple'))
     assert_eq(3, len(model.search.listings('orange', 20)))
+    assert_eq(3, model.search.listings_count('orange'))
     assert_eq(4, len(model.search.listings('pear', 20)))
+    assert_eq(4, model.search.listings_count('pear'))
     assert_eq(4, len(model.search.listings('peach', 20)))
+    assert_eq(4, model.search.listings_count('peach'))
     assert_eq(0, len(model.search.listings('grapes', 20)))
+    assert_eq(0, model.search.listings_count('grapes'))
 
 
 @tests.prepare

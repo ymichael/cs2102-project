@@ -104,6 +104,7 @@ def get_latest_listings(limit, offset=0):
         obj = cursor.execute(sql, (limit, offset)).fetchall()
     return obj
 
+
 def get_all_listings():
     sql = "SELECT * FROM listings"
     with db.DatabaseCursor() as cursor:

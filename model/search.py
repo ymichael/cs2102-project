@@ -13,6 +13,15 @@ def listings(query, limit, offset=0):
     return [x['listing_id'] for x in matching_listings]
 
 
+def listings_count(query):
+    sql = """\
+        SELECT COUNT(*) AS count FROM listing_search
+            WHERE content MATCH ?"""
+    with db.DatabaseCursor() as cursor:
+        row = cursor.execute(sql, (query,)).fetchone()
+    return row['count']
+
+
 def all_listing_search_entries():
 	sql = """SELECT * FROM listing_search"""
 	with db.DatabaseCursor() as cursor:
