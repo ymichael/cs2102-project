@@ -105,8 +105,7 @@ def listing(listing_id):
     data = generic_data_object()
     data['title'] = 'Listing'
     data['listing'] = model.listing.Listing(listing_id).info()
-
-    print data
+    data['owner'] = model.user.get_user_info(data['listing']['owner_id'])
     return render_template('listing.html', **data)
 
 
