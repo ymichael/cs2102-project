@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class='row'>
+    <div class="col-md-8">
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" src="//placehold.it/200">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">{{ user.name }}</h4>
+                <p>{{ user.email }}</p>
+                {% if user.bio %}
+                    <p>{{ user.bio }}</p>
+                {% endif %}
+                {% if logged_in_uid == user.uid %}
+                    <p><a href="/user/{{ logged_in_uid }}/edit">Edit profile</a></p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="panel panel-default top-buffer">
+            <div class="panel-heading">
+                <h3 class="panel-title">User Listings</h3>
+            </div>
+            <div class="panel-body">
+                {% for l in listings %}
+                    {% include 'partials/single_listing.html' %}
+                {% else %}
+                    <p>User does not have any listings.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-4"></div>
+</div>
+{% endblock %}

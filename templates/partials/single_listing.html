@@ -10,7 +10,7 @@
         <div class='meta'>
             <span>{{ l.create_time | datetime }}</span>
             &middot;
-            <span>{{ l.name | title }}</span>
+            <span><a href="/user/{{ l.owner_id}}">{{ l.name | title }}</a></span>
             &middot;
             <span>{{ l.comment_count }} Comments</span>
         </div>

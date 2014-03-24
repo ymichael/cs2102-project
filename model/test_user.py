@@ -39,12 +39,12 @@ def test_user_update_and_save():
     assert_eq(user.email, 'michael@test.com')
 
     user.name = 'John'
-    user.email = 'john@test.com'
+    user.bio = 'asdf'
     user.save()
 
     new_user_obj = model.user.User(user_id)
     assert_eq(new_user_obj.name, 'John')
-    assert_eq(new_user_obj.email, 'john@test.com')
+    assert_eq(new_user_obj.bio, 'asdf')
 
 
 @tests.prepare

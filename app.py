@@ -43,11 +43,11 @@ def close_db(error):
 
 def login_user(uid):
     session['logged_in'] = True
-    session['logged_in_user'] = uid
+    session['logged_in_uid'] = uid
 
 
 def logged_in_user():
-    return session['logged_in_user']
+    return session['logged_in_uid']
 
 
 def is_logged_in():
@@ -56,7 +56,7 @@ def is_logged_in():
 
 def logout_user():
     session.pop('logged_in')
-    session.pop('logged_in_user')
+    session.pop('logged_in_uid')
 
 
 def login_required(route):
@@ -74,7 +74,7 @@ def generic_data_object():
     data['q'] = ''
     data.update(session)
     if data.get('logged_in'):
-        data['user'] = model.user.get_user_info(data['logged_in_user'])
+        data['logged_in_user'] = model.user.get_user_info(data['logged_in_uid'])
     return data
 
 
@@ -194,6 +194,7 @@ def login():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect('/')
@@ -216,6 +217,66 @@ def search():
             query, results_per_page,
             (page - 1) * results_per_page))
     return render_template('search.html', **data)
+
+
+@app.route("/user/<int:uid>/edit", methods=['GET', 'POST'])
+@login_required
+def user_edit(uid):
+    if logged_in_user() != uid:
+        return redirect('/user/%s' % uid)
+
+    if request.method == 'GET':
+        data = generic_data_object()
+        data['user'] = model.user.get_user_info(uid)
+        if not data['user']:
+            return 'No such user', 404
+        return render_template('user_edit.html', **data)
+    else:
+        name = request.form.get('name')
+        bio = request.form.get('bio')
+        old_password = request.form.get('old_password')
+        new_password1 = request.form.get('new_password1')
+        new_password2 = request.form.get('new_password2')
+        # TODO(michael): sanitize + validate.
+        user = model.user.User(uid)
+
+        if (old_password or new_password1 or new_password2) and \
+                not (old_password and new_password1 and new_password2):
+            flash("Sorry, you need to fill in all three password fields to\
+                change your password", "error")
+            return redirect('/user/%s/edit' % uid)
+
+            if new_password1 != new_password2:
+                flash("Sorry, your new passwords do not match.", "error")
+                return redirect('/user/%s/edit' % uid)
+
+            # Verify old password.
+            uid = model.user.verify_login(user.email, password)
+            if not uid:
+                flash("Sorry, your old password is incorrect.", "error")
+                return redirect('/user/%s/edit' % uid)
+
+            # Change password.
+            model.user.update_password(uid, new_password1)
+            flash("Password changed.", "info")
+        
+        user.name = name
+        user.bio = bio
+        user.save()
+        flash("Profile updated.", "info")
+
+        return redirect('/user/%s/edit' % uid)
+
+
+@app.route("/user/<int:uid>")
+def user(uid):
+    data = generic_data_object()
+    data['user'] = model.user.get_user_info(uid)
+    if not data['user']:
+        return 'No such user', 404
+
+    data['listings'] = model.listing.get_listings_for_user(uid)
+    return render_template('user.html', **data)
 
 
 @app.route("/")

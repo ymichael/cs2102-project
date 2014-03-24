@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class='row'>
+    <div class="col-md-8">
+        <div class="page-header">
+            <h2>Edit your profile <small><a href="/user/{{ logged_in_uid }}">Back to profile</a></small></h2>
+        </div>
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" src="//placehold.it/200">
+            </a>
+            <div class="media-body">
+                <form role="form" method='post'>
+                    <div class="form-group">
+                        <label for="inputName">Name</label>
+                        <input name='name' type="text" class="form-control" id="inputName" placeholder="Enter Name" value="{{ logged_in_user.name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail">Email</label>
+                        <p class="form-control-static">{{ logged_in_user.email }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCurrentPassword">Current password</label>
+                        <input name='old_password' type="password" class="form-control" id="inputCurrentPassword" placeholder="Enter old password">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputNewPassword">New password</label>
+                        <input name='new_password1' type="password" class="form-control" id="inputNewPassword" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCurrentPassword">Re-confirm new password</label>
+                        <input name='new_password2' type="password" class="form-control" id="inputNewPassword2" placeholder="Re-enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputBio">Bio</label>
+                        {% if logged_in_user.bio %}
+                            <textarea rows="10" name='bio' class='form-control' id='inputBio' placeholder='Enter bio'>{{ logged_in_user.bio }}</textarea>
+                        {% else %}
+                            <textarea rows="10" name='bio' class='form-control' id='inputBio' placeholder='Enter bio'></textarea>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-default">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+{% endblock %}

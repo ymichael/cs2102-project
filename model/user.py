@@ -21,7 +21,7 @@ class User(model.base.BaseModel):
         return get_user_info(self.id)
 
     def put(self):
-        update_existing_user(self.id, self.name, self.email)
+        update_existing_user(self.id, self.name, self.bio)
 
     def post(self):
         raise Exception("Use model.user.create_new_user instead.")
@@ -31,13 +31,13 @@ class User(model.base.BaseModel):
         return (self.name and self.email and self.id)
 
 
-def update_existing_user(user_id, name, email):
+def update_existing_user(user_id, name, bio):
     sql = """\
         UPDATE users
-        SET name = ?, email = ?
+        SET name = ?, bio = ?
         WHERE uid = ?"""
     with db.DatabaseCursor() as cursor:
-        cursor.execute(sql, (name, email, user_id))
+        cursor.execute(sql, (name, bio, user_id))
 
 
 def create_new_user(name, email, password):
@@ -51,6 +51,16 @@ def create_new_user(name, email, password):
         new_user_id = cursor.lastrowid
 
     return new_user_id
+
+
+def update_password(uid, new_password):
+    password_hash = get_password_hash(new_password)
+    sql = """\
+        UPDATE users
+            SET password_hash = ?
+            WHERE uid = ?"""
+    with db.DatabaseCursor() as cursor:
+        cursor.execute(sql, (password_hash, uid))
 
 
 def verify_login(email, password):

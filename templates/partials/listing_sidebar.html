@@ -4,7 +4,7 @@
     </div>
     <div class="panel-body">
         <img src="//placehold.it/200">
-        <p>{{ owner.name }}</p>
+        <p><a href="/user/{{ owner.uid }}">{{ owner.name | title }}</a></p>
         <p>{{ owner.email }}</p>
     </div>
 </div>

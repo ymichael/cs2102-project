@@ -18,3 +18,7 @@ body {
 	padding-bottom: 10px;
 	border-bottom: solid 1px #eee;
 }
+
+.top-buffer {
+	margin-top:20px;
+}
