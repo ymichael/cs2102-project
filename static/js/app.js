@@ -10,6 +10,17 @@ $(function() {
         }
     });
 
+    // Listing Edit
+    $editlistingform = $('#editlistingform');
+    $('#editlistingdeletebutton').click(function(e) {
+        e.preventDefault();
+        if (confirm('Do you really want to delete this entry?')) {
+            $editlistingform.submit();
+        } else {
+            return false;
+        }
+    })
+
     // Listing Tabs
     $('#listingTabs a:first').tab('show');
 

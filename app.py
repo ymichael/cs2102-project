@@ -146,6 +146,13 @@ def listing_edit(listing_id):
         data['categories'] = ', '.join([x['label'] for x in categories])
         return render_template('listing_edit.html', **data)
     else:
+        if not request.form.get('update'):
+            # Use clicked delete.
+            listing = model.listing.Listing(listing_id)
+            listing.delete()
+            flash("Listing deleted.", "info")
+            return redirect('/')
+
         title = request.form['title']
         description = request.form['description']
         # TODO(michael): Sanitize + validate
