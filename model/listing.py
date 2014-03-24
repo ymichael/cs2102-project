@@ -94,7 +94,7 @@ def get_listings_info(listing_ids):
     sql = """\
         SELECT *
             FROM listings l, users u, (
-                SELECT l.lid, COUNT(*) AS comment_count
+                SELECT l.lid, COUNT(c.cid) AS comment_count
                     FROM listings l
                         LEFT JOIN comments c
                             ON l.lid = c.lid
@@ -112,7 +112,7 @@ def get_listings_for_user(uid):
     sql = """\
         SELECT *
             FROM listings l, users u, (
-                SELECT l.lid, COUNT(*) AS comment_count
+                SELECT l.lid, COUNT(c.cid) AS comment_count
                     FROM listings l
                         LEFT JOIN comments c
                             ON l.lid = c.lid
@@ -132,7 +132,7 @@ def get_related_listings(listing_id, limit, offset=0):
     sql = """\
         SELECT *
             FROM listings l, users u, (
-                SELECT l.lid, COUNT(*) AS comment_count
+                SELECT l.lid, COUNT(c.cid) AS comment_count
                     FROM listings l
                         LEFT JOIN comments c
                             ON l.lid = c.lid
@@ -151,23 +151,11 @@ def get_related_listings(listing_id, limit, offset=0):
     return obj
 
 
-def test():
-    sql = """\
-        SELECT l.lid, COUNT(*) AS comment_count
-            FROM listings l
-                LEFT JOIN comments c
-                    ON l.lid = c.lid
-            GROUP BY l.lid"""
-    with db.DatabaseCursor() as cursor:
-        obj = cursor.execute(sql).fetchall()
-    return obj
-
-
 def get_latest_listings(limit, offset=0):
     sql = """\
         SELECT *
             FROM listings l, users u, (
-                SELECT l.lid, COUNT(*) AS comment_count
+                SELECT l.lid, COUNT(c.cid) AS comment_count
                     FROM listings l
                         LEFT JOIN comments c
                             ON l.lid = c.lid
