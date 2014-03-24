@@ -178,11 +178,19 @@ def logout():
 
 @app.route("/search")
 def search():
+    results_per_page = 20
     query = request.args.get('q')
+    page = int(request.args.get('p')) or 1
+
     data = generic_data_object()
     data['q'] = query
+    data['p'] = page
+    data['total_results'] = model.search.listings_count(query)
+    data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
     data['results'] = model.listing.get_listings_info(
-        model.search.listings(query, 20))
+        model.search.listings(
+            query, results_per_page,
+            (page - 1) * results_per_page))
     return render_template('search.html', **data)
 
 

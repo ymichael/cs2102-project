@@ -1,27 +1,39 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="col-md-6">
-<div class="page-header">
+<div class="clearfix page-header">
+    {% if results %}
+        <div class='pull-right'>
+            {% include "partials/search_pager.html" %}
+        </div>
+    {% endif %}
     <h2>Search Results:</h2>
+    {% if results %}
+        <p>
+            Total {{ total_results }} results.
+            <i>Showing page {{ p }} of {{ max_p }}.</i>
+        </p>
+    {% endif %}
 </div>
 <div class='row'>
-	{% if not results %}
-		<b>No results found. :(</b>
-	{% else %}
-		{% for r in results %}
-		<div class="media">
-			<a class="pull-left" href="#">
-				<img class="media-object" src="{{ url_for('static', filename='img/64.jpg') }}">
-			</a>
-			<div class="media-body">
-				<h4 class="media-heading">
-					<a href="/listing/{{ r.id }}">{{ r.title }}</a>
-				</h4>
-				<p>{{ r.description }}</p>
-			</div>
-		</div>
-		{% endfor %}
-	{% endif %}
+    {% if not results %}
+        <b>No results found. :(</b>
+    {% else %}
+        {% for r in results %}
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" src="{{ url_for('static', filename='img/64.jpg') }}">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="/listing/{{ r.id }}">{{ r.title }}</a>
+                </h4>
+                <p>{{ r.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+        {% include "partials/search_pager.html" %}
+    {% endif %}
 </div>
 </div>
 {% endblock %}
