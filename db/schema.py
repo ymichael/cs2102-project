@@ -71,14 +71,14 @@ SCHEMA = [
     """),
     (11, """\
         CREATE VIRTUAL TABLE listing_search
-            USING fts4(listing_id INT, title, description)
+            USING fts4(listing_id INT, content)
     """),
     (12, """\
         CREATE TRIGGER listing_search_insert
             AFTER INSERT ON listings
             BEGIN
-                INSERT INTO listing_search(listing_id, title, description)
-                    VALUES (new.id, new.title, new.description);
+                INSERT INTO listing_search(listing_id, content)
+                    VALUES (new.id, new.title || " " || new.description);
             END
     """),
     (13, """\
@@ -86,7 +86,7 @@ SCHEMA = [
             AFTER UPDATE ON listings
             BEGIN
                 UPDATE listing_search
-                    SET title = new.title, description = new.description
+                    SET content = new.title || " " || new.description
                     WHERE listing_id = new.id;
             END
     """),
