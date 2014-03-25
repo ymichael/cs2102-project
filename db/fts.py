@@ -20,6 +20,6 @@ def maybe_populate_virtual_table():
     sql = """\
         INSERT INTO listing_search(lid, content)
             SELECT lid, title || " " || description
-                FROM listings"""
+                FROM listing"""
     with db.DatabaseCursor() as cursor:
        cursor.execute(sql)

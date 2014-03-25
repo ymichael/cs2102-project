@@ -31,7 +31,7 @@ class Comment(model.base.BaseModel):
 def get_comment_info(comment_id):
     sql = """\
         SELECT *
-            FROM comments
+            FROM comment
             WHERE cid = ?"""
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql, (comment_id,)).fetchone()
@@ -48,7 +48,7 @@ def create_new_comment(body, uid, lid):
         raise Exception('No such listing.')
 
     sql = """\
-        INSERT INTO comments (body, uid, lid)
+        INSERT INTO comment (body, uid, lid)
             VALUES (?, ?, ?)"""
 
     with db.DatabaseCursor() as cursor:
@@ -60,7 +60,7 @@ def create_new_comment(body, uid, lid):
 def get_comments_for_listing(lid, time_ordered=True):
     sql = """\
         SELECT *
-            FROM listings l, comments c, users u
+            FROM listing l, comment c, user u
             WHERE l.lid = c.lid AND
                 l.lid = ? AND
                 c.uid = u.uid"""
@@ -73,7 +73,7 @@ def get_comments_for_listing(lid, time_ordered=True):
 
 def get_number_of_comments():
     sql = """\
-        SELECT COUNT(*) AS count FROM comments"""
+        SELECT COUNT(*) AS count FROM comment"""
     with db.DatabaseCursor() as cursor:
         row = cursor.execute(sql).fetchone()
     return row['count']

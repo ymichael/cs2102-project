@@ -50,14 +50,14 @@ class Listing(model.base.BaseModel):
 
 
 def delete_listing(listing_id):
-    sql = """DELETE FROM listings WHERE lid = ?"""
+    sql = """DELETE FROM listing WHERE lid = ?"""
     with db.DatabaseCursor() as cursor:
         cursor.execute(sql, (listing_id,))
 
 
 def update_existing_listing(listing_id, title, description):
     sql = """\
-        UPDATE listings
+        UPDATE listing
         SET title = ?, description = ?, last_update_time = ?
         WHERE lid = ?"""
     with db.DatabaseCursor() as cursor:
@@ -71,7 +71,7 @@ def create_new_listing(title, description, owner_id):
         raise Exception('No such user.')
 
     sql = """\
-        INSERT INTO listings (title, description, owner_id)
+        INSERT INTO listing (title, description, owner_id)
             VALUES (?, ?, ?)"""
 
     with db.DatabaseCursor() as cursor:
@@ -83,7 +83,7 @@ def create_new_listing(title, description, owner_id):
 def get_listing_info(listing_id):
     sql = """\
         SELECT *
-            FROM listings
+            FROM listing
             WHERE lid = ?"""
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql, (listing_id,)).fetchone()
@@ -93,10 +93,10 @@ def get_listing_info(listing_id):
 def get_listings_info(listing_ids):
     sql = """\
         SELECT *
-            FROM listings l, users u, (
+            FROM listing l, user u, (
                 SELECT l.lid, COUNT(c.cid) AS comment_count
-                    FROM listings l
-                        LEFT JOIN comments c
+                    FROM listing l
+                        LEFT JOIN comment c
                             ON l.lid = c.lid
                     GROUP BY l.lid) c
             WHERE l.lid IN (%s) AND
@@ -111,10 +111,10 @@ def get_listings_info(listing_ids):
 def get_listings_for_user(uid):
     sql = """\
         SELECT *
-            FROM listings l, users u, (
+            FROM listing l, user u, (
                 SELECT l.lid, COUNT(c.cid) AS comment_count
-                    FROM listings l
-                        LEFT JOIN comments c
+                    FROM listing l
+                        LEFT JOIN comment c
                             ON l.lid = c.lid
                     GROUP BY l.lid) c
             WHERE l.owner_id = u.uid AND
@@ -131,16 +131,16 @@ def get_related_listings(listing_id, limit, offset=0):
     # TODO(michael): tmp implementation.
     sql = """\
         SELECT *
-            FROM listings l, users u, (
+            FROM listing l, user u, (
                 SELECT l.lid, COUNT(c.cid) AS comment_count
-                    FROM listings l
-                        LEFT JOIN comments c
+                    FROM listing l
+                        LEFT JOIN comment c
                             ON l.lid = c.lid
                     GROUP BY l.lid) c
             WHERE l.owner_id = u.uid AND
                 c.lid = l.lid AND
                 l.owner_id = (
-                    SELECT owner_id FROM listings
+                    SELECT owner_id FROM listing
                         WHERE lid = ?) AND
                 l.lid <> ?
             ORDER BY l.lid DESC
@@ -154,7 +154,7 @@ def get_related_listings(listing_id, limit, offset=0):
 def filter_lids_by_cat_ids(lids, cat_ids):
     sql = """\
         SELECT l.lid
-            FROM listings l, listing_categories c
+            FROM listing l, listing_category c
             WHERE l.lid = c.lid AND
                 c.cat_id IN (%s) AND
                 l.lid IN (%s)
@@ -170,7 +170,7 @@ def filter_lids_by_cat_ids(lids, cat_ids):
 def get_lids_by_cat_ids(cat_ids, limit, offset=0):
     sql = """\
         SELECT l.lid
-            FROM listings l, listing_categories c
+            FROM listing l, listing_category c
             WHERE l.lid = c.lid AND
                 c.cat_id IN (%s)
             ORDER BY l.lid DESC
@@ -185,7 +185,7 @@ def get_lids_by_cat_ids(cat_ids, limit, offset=0):
 def get_number_of_listings_in_cat_ids(cat_ids):
     sql = """\
         SELECT COUNT(*) as count
-            FROM listings l, listing_categories c
+            FROM listing l, listing_category c
             WHERE l.lid = c.lid AND
                 c.cat_id IN (%s)
         """ % ','.join('?' * len(cat_ids))
@@ -197,10 +197,10 @@ def get_number_of_listings_in_cat_ids(cat_ids):
 def get_latest_listings(limit, offset=0):
     sql = """\
         SELECT *
-            FROM listings l, users u, (
+            FROM listing l, user u, (
                 SELECT l.lid, COUNT(c.cid) AS comment_count
-                    FROM listings l
-                        LEFT JOIN comments c
+                    FROM listing l
+                        LEFT JOIN comment c
                             ON l.lid = c.lid
                     GROUP BY l.lid) c
             WHERE l.owner_id = u.uid AND
@@ -213,14 +213,14 @@ def get_latest_listings(limit, offset=0):
 
 
 def get_all_listings():
-    sql = "SELECT * FROM listings"
+    sql = "SELECT * FROM listing"
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql).fetchall()
     return obj
 
 
 def get_number_of_listings():
-    sql = "SELECT COUNT(*) as count FROM listings"
+    sql = "SELECT COUNT(*) as count FROM listing"
     with db.DatabaseCursor() as cursor:
         row = cursor.execute(sql).fetchone()
     return row['count']

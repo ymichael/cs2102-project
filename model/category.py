@@ -83,7 +83,7 @@ def get_all_cat_ids():
 
 def add_listing_to_category(lid, cat_id):
     sql = """\
-        INSERT OR IGNORE INTO listing_categories (lid, cat_id)
+        INSERT OR IGNORE INTO listing_category (lid, cat_id)
             VALUES (?, ?)"""
     with db.DatabaseCursor() as cursor:
         cursor.execute(sql, (lid, cat_id))
@@ -91,7 +91,7 @@ def add_listing_to_category(lid, cat_id):
 
 def remove_listing_from_category(lid, cat_id):
     sql = """\
-        DELETE FROM listing_categories
+        DELETE FROM listing_category
             WHERE lid = ? AND
             cat_id = ?"""
     with db.DatabaseCursor() as cursor:
@@ -101,7 +101,7 @@ def remove_listing_from_category(lid, cat_id):
 def listing_categories(lid):
     sql = """\
         SELECT c.cat_id, c.label
-            FROM listing_categories l, category c
+            FROM listing_category l, category c
             WHERE l.lid = ? AND
                 l.cat_id = c.cat_id"""
     with db.DatabaseCursor() as cursor:
@@ -122,7 +122,7 @@ def cat_ids_to_labels(cat_ids):
 
 def number_of_listing_categories():
     sql = """\
-        SELECT COUNT(*) as count FROM listing_categories"""
+        SELECT COUNT(*) as count FROM listing_category"""
     with db.DatabaseCursor() as cursor:
         obj = cursor.execute(sql).fetchone()
     return obj['count']

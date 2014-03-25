@@ -33,7 +33,7 @@ class User(model.base.BaseModel):
 
 def update_existing_user(user_id, name, bio):
     sql = """\
-        UPDATE users
+        UPDATE user
         SET name = ?, bio = ?
         WHERE uid = ?"""
     with db.DatabaseCursor() as cursor:
@@ -43,7 +43,7 @@ def update_existing_user(user_id, name, bio):
 def create_new_user(name, email, password):
     password_hash = get_password_hash(password)
     sql = """\
-        INSERT INTO users (name, email, password_hash)
+        INSERT INTO user (name, email, password_hash)
             VALUES (?, ?, ?)"""
 
     with db.DatabaseCursor() as cursor:
@@ -56,7 +56,7 @@ def create_new_user(name, email, password):
 def update_password(uid, new_password):
     password_hash = get_password_hash(new_password)
     sql = """\
-        UPDATE users
+        UPDATE user
             SET password_hash = ?
             WHERE uid = ?"""
     with db.DatabaseCursor() as cursor:
@@ -64,7 +64,7 @@ def update_password(uid, new_password):
 
 
 def verify_login(email, password):
-    sql = "SELECT uid, password_hash FROM users WHERE email = ?"
+    sql = "SELECT uid, password_hash FROM user WHERE email = ?"
     with db.DatabaseCursor() as cursor:
         user = cursor.execute(sql, (email,)).fetchone()
 
@@ -78,20 +78,20 @@ def verify_login(email, password):
 
 
 def get_user_info(user_id):
-    sql = "SELECT * FROM users WHERE uid = ?"
+    sql = "SELECT * FROM user WHERE uid = ?"
     with db.DatabaseCursor() as cursor:
         user = cursor.execute(sql, (user_id,)).fetchone()
     return user
 
 def get_all_users():
-    sql = "SELECT u.uid, u.name, u.email FROM users AS u"
+    sql = "SELECT u.uid, u.name, u.email FROM user AS u"
     with db.DatabaseCursor() as cursor:
         rows = cursor.execute(sql).fetchall()
     return rows
 
 
 def get_number_of_users():
-    sql = "SELECT COUNT(*) as count FROM users"
+    sql = "SELECT COUNT(*) as count FROM user"
     with db.DatabaseCursor() as cursor:
         row = cursor.execute(sql).fetchone()
     return row['count']
