@@ -1,3 +1,9 @@
+#Check it out online
+http://cs2102.ymichael.com/
+
+#Read our report
+https://docs.google.com/document/d/1S7favUB12Mqybnwc5R3nzxfr3QFllD7kojeCnjVlL3s/edit?usp=sharing
+
 # Install Dependencies
 - `$ pip install -r requirements.txt`
 
