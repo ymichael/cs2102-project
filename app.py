@@ -231,23 +231,25 @@ def logout():
 def search():
     results_per_page = 20
     query = request.args.get('q', '')
-    category = request.args.get('cat', '')
+    cat = request.args.get('cat', '')
+    categories = [x.upper() for x in cat.split(',')]
     page = request.args.get('p') or 1
     page = int(page)
 
     data = generic_data_object()
     data['q'] = query
     data['p'] = page
-    data['cat'] = category
+    data['cat'] = cat
 
-    if query and category:
+    if query and categories:
         pass
-    elif category:
-        cat_id = model.category.create_or_retrieve_category(category)
-        data['total_results'] = model.listing.get_number_of_listings_in_cat(cat_id)
+    elif categories:
+        cat_ids = [model.category.create_or_retrieve_category(x)
+            for x in categories]
+        data['total_results'] = model.listing.get_number_of_listings_in_cat_ids(cat_ids)
         data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
-        lids = model.listing.get_lids_by_cat_id(
-            cat_id, results_per_page,
+        lids = model.listing.get_lids_by_cat_ids(
+            cat_ids, results_per_page,
             (page - 1) * results_per_page)
     elif query:
         data['total_results'] = model.search.listings_count(query)
