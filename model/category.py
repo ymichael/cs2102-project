@@ -7,7 +7,7 @@ CATEGORIES = [
     'BOOKS',
     'ELECTRONICS',
     'FOOD',
-    'HOME & LIVING',
+    'HOME',
     'HOUSING',
     'JEWELLERY',
     'KIDS',
