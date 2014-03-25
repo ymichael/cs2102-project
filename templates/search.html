@@ -18,7 +18,14 @@
         </div>
         <div class='row'>
             {% if not results %}
-                <b>No results found. :(</b>
+                <div class="media listing">
+                    <a class="pull-left" href="#">
+                        <img class="media-object" src="http://placekitten.com/g/100/100">
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">Sorry, we couldn't find anything.</h4>
+                    </div>
+                </div>
             {% else %}
                 {% for l in results %}
                     {% include "partials/single_listing.html" %}
