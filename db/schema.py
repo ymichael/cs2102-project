@@ -20,7 +20,8 @@ SCHEMA = [
             description text,
             owner_id integer NOT NULL,
             create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            last_update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+            last_update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            FOREIGN KEY(owner_id) REFERENCES users(uid)
         )
     """),
     (4, """CREATE INDEX listings_owner ON listings (owner_id)"""),
@@ -31,48 +32,32 @@ SCHEMA = [
             description text
         )
     """),
-    (6, """\
+    (6, """CREATE INDEX category_label ON category (label)"""),
+    (7, """\
         CREATE TABLE listing_categories (
             lid integer NOT NULL,
             cat_id integer NOT NULL,
-            PRIMARY KEY(lid, cat_id)
+            PRIMARY KEY(lid, cat_id),
+            FOREIGN KEY(lid) REFERENCES listings(lid),
+            FOREIGN KEY(cat_id) REFERENCES category(cat_id)
         )
     """),
-    (7, """\
+    (8, """\
         CREATE TABLE comments (
             cid integer PRIMARY KEY,
             lid integer NOT NULL,
             uid integer NOT NULL,
             body text,
-            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-        )
-    """),
-    (8, """\
-        CREATE TABLE hearts (
-            uid integer NOT NULL,
-            lid integer NOT NULL,
-            PRIMARY KEY(uid, lid)
+            create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            FOREIGN KEY(lid) REFERENCES listings(lid),
+            FOREIGN KEY(uid) REFERENCES users(uid)
         )
     """),
     (9, """\
-        CREATE TABLE flags (
-            uid integer NOT NULL,
-            lid integer NOT NULL,
-            PRIMARY KEY(uid, lid)
-        )
-    """),
-    (10, """\
-        CREATE TABLE followers (
-            follower_id integer NOT NULL,
-            following_id integer NOT NULL,
-            PRIMARY KEY(follower_id, following_id)
-        )
-    """),
-    (11, """\
         CREATE VIRTUAL TABLE listing_search
             USING fts4(lid INT, content)
     """),
-    (12, """\
+    (10, """\
         CREATE TRIGGER listing_search_insert
             AFTER INSERT ON listings
             BEGIN
@@ -80,7 +65,7 @@ SCHEMA = [
                     VALUES (new.lid, new.title || " " || new.description);
             END
     """),
-    (13, """\
+    (11, """\
         CREATE TRIGGER listing_search_update
             AFTER UPDATE ON listings
             BEGIN
@@ -89,7 +74,7 @@ SCHEMA = [
                     WHERE lid = new.lid;
             END
     """),
-    (14, """\
+    (12, """\
         CREATE TRIGGER listing_search_delete
             AFTER DELETE ON listings
             BEGIN
