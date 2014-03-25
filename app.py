@@ -261,18 +261,18 @@ def search():
         filtered_lids = model.listing.filter_lids_by_cat_ids(
             all_lids_matching_q, cat_ids)
         data['total_results'] = len(filtered_lids)
-        data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
+        data['max_p'] = int(round(float(data['total_results']) / results_per_page + 0.5))
         start = (page - 1) * results_per_page
         lids = filtered_lids[start:start + results_per_page]
     elif categories:
         data['total_results'] = model.listing.get_number_of_listings_in_cat_ids(cat_ids)
-        data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
+        data['max_p'] = int(round(float(data['total_results']) / results_per_page + 0.5))
         lids = model.listing.get_lids_by_cat_ids(
             cat_ids, results_per_page,
             (page - 1) * results_per_page)
     elif query:
         data['total_results'] = model.search.listings_count(query)
-        data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
+        data['max_p'] = int(round(float(data['total_results']) / results_per_page + 0.5))
         lids = model.search.listings(
             query, results_per_page,
             (page - 1) * results_per_page)
@@ -347,8 +347,16 @@ def user(uid):
 
 @app.route("/")
 def index():
+    results_per_page = 10
+    page = request.args.get('p') or 1
+    page = int(page)
     data = generic_data_object()
-    listings = model.listing.get_latest_listings(20)
+    data['p'] = page
+    data['total_results'] = model.listing.get_number_of_listings()
+    data['max_p'] = int(round(float(data['total_results']) / results_per_page + 0.5))
+    listings = model.listing.get_latest_listings(
+        results_per_page,
+        (page - 1) * results_per_page)
     # TODO(michael): Super inefficient.
     for l in listings:
         l['categories'] = model.category.listing_categories(l['lid'])
