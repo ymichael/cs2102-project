@@ -14,6 +14,8 @@
                 {% endif %}
                 {% if logged_in_uid == user.uid %}
                     <p><a href="/user/{{ logged_in_uid }}/edit">Edit profile</a></p>
+                {% elif is_admin %}
+                    <p><b>You are an admin.</b> <a href="/user/{{ logged_in_uid }}/edit">Edit profile</a></p>
                 {% endif %}
             </div>
         </div>

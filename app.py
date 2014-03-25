@@ -40,6 +40,9 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+def is_admin(uid):
+    # TODO(michael): hack.
+    return 201
 
 def login_user(uid):
     session['logged_in'] = True
@@ -75,6 +78,8 @@ def generic_data_object():
     data.update(session)
     if data.get('logged_in'):
         data['logged_in_user'] = model.user.get_user_info(data['logged_in_uid'])
+        print data['logged_in_uid']
+        data['is_admin'] = is_admin(data['logged_in_uid'])
     return data
 
 
@@ -135,7 +140,7 @@ def listing_comment_new(listing_id):
 @login_required
 def listing_edit(listing_id):
     listing = model.listing.Listing(listing_id)
-    if logged_in_user() != listing.owner_id:
+    if logged_in_user() != listing.owner_id and not is_admin(logged_in_user()):
         return redirect('/listing/%s', listing_id)
 
     if request.method == 'GET':
@@ -280,7 +285,7 @@ def search():
 @app.route("/user/<int:uid>/edit", methods=['GET', 'POST'])
 @login_required
 def user_edit(uid):
-    if logged_in_user() != uid:
+    if logged_in_user() != uid and not is_admin(logged_in_user()):
         return redirect('/user/%s' % uid)
 
     if request.method == 'GET':

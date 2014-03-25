@@ -12,7 +12,9 @@
         </p>
         <p>{{ listing.description }}</p>
         {% if logged_in and logged_in_uid == listing.owner_id %}
-            <p><b>You are the owner.</b> <a href="/listing/{{ listing.lid }}/edit">edit listing</a></p>
+            <p><b>You are the owner.</b> <a href="/listing/{{ listing.lid }}/edit">Edit listing</a></p>
+        {% elif is_admin %}
+            <p><b>You are an admin.</b> <a href="/listing/{{ listing.lid }}/edit">Edit listing</a></p>
         {% endif %}
     </div>
     <div class="row">
