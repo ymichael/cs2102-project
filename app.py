@@ -325,8 +325,8 @@ def main():
     # Initialize db/fts
     db.init()
     db.fts.init()
-    db.mock_data.maybe_bootstrap_db()
     model.category.init()
+    db.mock_data.maybe_bootstrap_db()
     app.run()
 
 
