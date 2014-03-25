@@ -9,7 +9,9 @@
         <p>{{ l.description }}</p>
         <p>
             {% for c in l.categories %}
-                <small class="label label-primary ">{{ c.label | upper }}</small>
+                <a href='/search?cat={{ c.label | upper }}' class="cat-pills label label-primary ">
+                    {{ c.label | upper }}
+                </a>
             {% endfor %}
         </p>
         <div class='meta'>

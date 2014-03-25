@@ -5,7 +5,9 @@
         <h2>{{ listing.title }}</h2>
         <p>
             {% for c in categories %}
-                <span class="cat-pills label label-primary ">{{ c.label | upper }}</span>
+                <a href='/search?cat={{ c.label | upper }}' class="large cat-pills label label-primary ">
+                    {{ c.label | upper }}
+                </a>
             {% endfor %}
         </p>
         <p>{{ listing.description }}</p>

@@ -24,5 +24,8 @@ body {
 }
 
 .cat-pills {
+	margin: 0 2px;
+}
+.large {
 	font-size: 1.1em;
 }

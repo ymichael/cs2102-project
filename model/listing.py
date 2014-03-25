@@ -151,6 +151,31 @@ def get_related_listings(listing_id, limit, offset=0):
     return obj
 
 
+def get_lids_by_cat_id(cat_id, limit, offset=0):
+    sql = """\
+        SELECT l.lid
+            FROM listings l, listing_categories c
+            WHERE l.lid = c.lid AND
+                c.cat_id = ?
+            ORDER BY l.lid DESC
+            LIMIT ? OFFSET ?"""
+    with db.DatabaseCursor() as cursor:
+        obj = cursor.execute(
+            sql, (cat_id, limit, offset)).fetchall()
+    return [x['lid'] for x in obj]
+
+
+def get_number_of_listings_in_cat(cat_id):
+    sql = """\
+        SELECT COUNT(*) as count
+            FROM listings l, listing_categories c
+            WHERE l.lid = c.lid AND
+                c.cat_id = ?"""
+    with db.DatabaseCursor() as cursor:
+        row = cursor.execute(sql, (cat_id,)).fetchone()
+    return row['count']
+
+
 def get_latest_listings(limit, offset=0):
     sql = """\
         SELECT *

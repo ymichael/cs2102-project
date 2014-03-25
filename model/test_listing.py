@@ -141,3 +141,20 @@ def test_get_latest_listings():
     assert_eq(len(last_two_listings), 2)
     assert_eq(last_two_listings[0]['title'], 'title3')
     assert_eq(last_two_listings[1]['title'], 'title2')
+
+
+@tests.prepare
+def test_get_lids_by_cat_id():
+    uid = db.mock_data.create_fake_user()
+    lid1 = db.mock_data.create_fake_listings(uid)
+    lid2 = db.mock_data.create_fake_listings(uid)
+
+    cat_id = model.category.create_or_retrieve_category('TMP')
+    assert_eq(0, len(model.listing.get_lids_by_cat_id(cat_id, 20)))
+    model.category.add_listing_to_category(lid1, cat_id)
+    model.category.add_listing_to_category(lid2, cat_id)
+    assert_eq(2, len(model.listing.get_lids_by_cat_id(cat_id, 20)))
+    
+    lids = model.listing.get_lids_by_cat_id(cat_id, 20)
+    assert_eq(lid2, lids[0])
+    assert_eq(lid1, lids[1])

@@ -230,20 +230,34 @@ def logout():
 @app.route("/search")
 def search():
     results_per_page = 20
-    query = request.args.get('q')
+    query = request.args.get('q', '')
+    category = request.args.get('cat', '')
     page = request.args.get('p') or 1
     page = int(page)
 
     data = generic_data_object()
     data['q'] = query
     data['p'] = page
-    data['total_results'] = model.search.listings_count(query)
-    data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
-    listings = model.listing.get_listings_info(
-        model.search.listings(
+    data['cat'] = category
+
+    if query and category:
+        pass
+    elif category:
+        cat_id = model.category.create_or_retrieve_category(category)
+        data['total_results'] = model.listing.get_number_of_listings_in_cat(cat_id)
+        data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
+        lids = model.listing.get_lids_by_cat_id(
+            cat_id, results_per_page,
+            (page - 1) * results_per_page)
+    elif query:
+        data['total_results'] = model.search.listings_count(query)
+        data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
+        lids = model.search.listings(
             query, results_per_page,
-            (page - 1) * results_per_page))
+            (page - 1) * results_per_page)
+
     # TODO(michael): Super inefficient.
+    listings = model.listing.get_listings_info(lids)
     for l in listings:
         l['categories'] = model.category.listing_categories(l['lid'])
     data['results'] = listings
