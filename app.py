@@ -233,6 +233,8 @@ def search():
     query = request.args.get('q', '')
     cat = request.args.get('cat', '')
     categories = [x.upper() for x in cat.split(',')]
+    cat_ids = [model.category.create_or_retrieve_category(x)
+        for x in categories]
     page = request.args.get('p') or 1
     page = int(page)
 
@@ -242,10 +244,19 @@ def search():
     data['cat'] = cat
 
     if query and categories:
-        pass
+        # TODO(michael): Super inefficient
+        total_matching_q = model.search.listings_count(query)
+        all_lids_matching_q = model.search.listings(
+            query, total_matching_q, 0)
+
+        # Filter lids for those that match cat_ids
+        filtered_lids = model.listing.filter_lids_by_cat_ids(
+            all_lids_matching_q, cat_ids)
+        data['total_results'] = len(filtered_lids)
+        data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
+        start = (page - 1) * results_per_page
+        lids = filtered_lids[start:start + results_per_page]
     elif categories:
-        cat_ids = [model.category.create_or_retrieve_category(x)
-            for x in categories]
         data['total_results'] = model.listing.get_number_of_listings_in_cat_ids(cat_ids)
         data['max_p'] = int(round(float(data['total_results']) / 20 + 0.5))
         lids = model.listing.get_lids_by_cat_ids(

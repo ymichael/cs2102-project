@@ -151,6 +151,22 @@ def get_related_listings(listing_id, limit, offset=0):
     return obj
 
 
+def filter_lids_by_cat_ids(lids, cat_ids):
+    sql = """\
+        SELECT l.lid
+            FROM listings l, listing_categories c
+            WHERE l.lid = c.lid AND
+                c.cat_id IN (%s) AND
+                l.lid IN (%s)
+            ORDER BY l.lid DESC
+        """ % (','.join('?' * len(cat_ids)),
+                ','.join('?' * len(lids)))
+    with db.DatabaseCursor() as cursor:
+        cat_ids.extend(lids)
+        obj = cursor.execute(sql, cat_ids).fetchall()
+    return [x['lid'] for x in obj]
+
+
 def get_lids_by_cat_ids(cat_ids, limit, offset=0):
     sql = """\
         SELECT l.lid
