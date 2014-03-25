@@ -9,7 +9,7 @@ def listings(query, limit, offset=0):
             LIMIT ? OFFSET ?"""
     with db.DatabaseCursor() as cursor:
         matching_listings = \
-            cursor.execute(sql, (query, limit, offset)).fetchall()
+            cursor.execute(sql, (query+'*', limit, offset)).fetchall()
     return [x['lid'] for x in matching_listings]
 
 
@@ -18,7 +18,7 @@ def listings_count(query):
         SELECT COUNT(*) AS count FROM listing_search
             WHERE content MATCH ?"""
     with db.DatabaseCursor() as cursor:
-        row = cursor.execute(sql, (query,)).fetchone()
+        row = cursor.execute(sql, (query+'*',)).fetchone()
     return row['count']
 
 
