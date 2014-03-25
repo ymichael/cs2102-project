@@ -37,7 +37,7 @@
     </div>
 </div>
 <div class="col-md-4">
-    {% if logged_in and logged_in_uid != listing.owner_id %}
+    {% if logged_in_uid != listing.owner_id %}
         {% include 'partials/listing_sidebar.html' %}
     {% endif %}
 </div>
