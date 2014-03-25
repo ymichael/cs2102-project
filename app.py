@@ -237,7 +237,10 @@ def search():
     results_per_page = 20
     query = request.args.get('q', '')
     cat = request.args.get('cat', '')
-    categories = [x.upper() for x in cat.split(',')]
+    if cat:
+        categories = [x.upper() for x in cat.split(',')]
+    else:
+        categories = []
     cat_ids = [model.category.create_or_retrieve_category(x)
         for x in categories]
     page = request.args.get('p') or 1
